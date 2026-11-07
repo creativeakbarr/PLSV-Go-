@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Materi PLSV | PLSV Go!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root {
+    --navy: #0b2a5b; --biru: #1d4ed8; --biru-terang: #3b82f6; --langit: #0ea5e9; --indigo: #6366f1;
+    --biru-muda: #eff6ff; --garis: #bfdbfe; --teks: #1e293b; --teks-redup: #475569;
+    --hijau: #0f9d77; --merah: #dc2626; --kuning-muda: #fffbeb; --kuning: #f59e0b;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    display: flex; justify-content: center; margin: 0;
+    min-height: 100vh; min-height: 100dvh;
+    padding: clamp(10px, 3vw, 24px);
+    font-family: 'Urbanist', 'Segoe UI', system-ui, sans-serif; color: var(--teks);
+}
+.slide-container {
+    background: #fff; width: 100%; max-width: 1100px;
+    padding: clamp(20px, 4vw, 40px) clamp(16px, 4.5vw, 50px);
+    position: relative; overflow: hidden; overflow: clip;
+    box-shadow: 0 30px 80px rgba(11, 42, 91, 0.15);
+    border-radius: clamp(20px, 3vw, 28px); border: 3px solid var(--biru-terang); align-self: flex-start;
+}
+.slide-container::before {
+    content: ''; position: absolute; top: -100px; right: -100px; width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, transparent 70%); pointer-events: none;
+}
+header, .layout, .lanjut { position: relative; z-index: 1; }
+
+/* ===== Tombol kembali (kiri atas) ===== */
+.btn-kembali {
+    position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 8px;
+    margin-bottom: clamp(14px, 2.5vw, 20px); padding: 9px 16px;
+    border: 2px solid var(--garis); border-radius: 100px;
+    color: var(--teks-redup); text-decoration: none; font-weight: 700; font-size: 14px;
+    transition: border-color 0.25s, color 0.25s, background 0.25s;
+}
+.btn-kembali:hover { border-color: var(--biru-terang); color: var(--biru); background: var(--biru-muda); }
+
+/* ===== Header ===== */
+header {
+    display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;
+    gap: 14px; margin-bottom: clamp(18px, 3vw, 28px);
+}
+.title-group h2 {
+    color: var(--biru-terang); font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600;
+    letter-spacing: 4px; margin: 0 0 8px; text-transform: uppercase;
+}
+.title-group h1 { font-size: clamp(26px, 6vw, 38px); font-weight: 800; line-height: 1.1; margin: 0; color: var(--navy); }
+.title-group p { margin: 8px 0 0; color: var(--teks-redup); font-size: 15px; }
+.btn-tujuan {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, #14b8a6, var(--langit)); color: #fff; border: none; border-radius: 100px;
+    padding: 11px 20px; font: inherit; font-weight: 700; font-size: 14px; cursor: pointer;
+    transition: filter 0.2s, transform 0.2s;
+}
+.btn-tujuan:hover { filter: brightness(1.07); transform: translateY(-2px); }
+:focus-visible { outline: 3px solid var(--biru-terang); outline-offset: 2px; }
+
+/* ===== Layout: daftar isi + materi ===== */
+.layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: clamp(20px, 3.5vw, 36px); align-items: start; }
+.toc { position: sticky; top: 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 16px; }
+.toc-judul { font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--teks-redup); margin: 0 0 10px 6px; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.toc a {
+    display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--teks);
+    font-size: 14px; font-weight: 600; line-height: 1.3; padding: 9px 10px; border-radius: 12px;
+    transition: background 0.2s, color 0.2s;
+}
+.toc a .no {
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 8px; background: var(--garis); color: var(--navy);
+    font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+}
+.toc a:hover { background: var(--biru-muda); }
+.toc a.aktif { background: var(--biru-terang); color: #fff; }
+.toc a.aktif .no { background: rgba(255, 255, 255, 0.25); color: #fff; }
+
+/* ===== Isi materi ===== */
+.materi section { margin-bottom: clamp(30px, 5vw, 44px); scroll-margin-top: 16px; }
+.materi section:last-child { margin-bottom: 0; }
+.materi h3 {
+    display: flex; align-items: center; gap: 12px; font-size: clamp(20px, 3.4vw, 25px); font-weight: 800;
+    color: var(--navy); margin: 0 0 14px; padding-bottom: 10px; border-bottom: 3px solid var(--garis);
+}
+.materi h3 .no {
+    flex-shrink: 0; width: 36px; height: 36px; border-radius: 11px;
+    background: linear-gradient(135deg, var(--biru-terang), var(--biru)); color: #fff; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+}
+.materi h4 { font-size: 18px; font-weight: 800; color: var(--biru); margin: 22px 0 8px; }
+.materi p { margin: 0 0 12px; line-height: 1.7; font-size: 16px; }
+.materi ul, .materi ol { margin: 0 0 12px; padding-left: 22px; line-height: 1.7; font-size: 16px; }
+.materi li { margin-bottom: 4px; }
+
+.rumus {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.92em; font-weight: 600; background: var(--biru-muda);
+    border: 1px solid var(--garis); color: var(--navy); padding: 1px 7px; border-radius: 7px; white-space: nowrap;
+}
+.rumus-besar {
+    display: block; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: clamp(18px, 4vw, 24px);
+    font-weight: 600; color: var(--navy); background: var(--biru-muda); border: 2px dashed var(--biru-terang);
+    border-radius: 16px; padding: 14px 10px; margin: 12px 0 14px; overflow-x: auto;
+}
+
+.callout {
+    display: flex; gap: 14px; align-items: flex-start; background: var(--biru-muda);
+    border-left: 5px solid var(--biru-terang); border-radius: 16px; padding: 14px 18px; margin: 0 0 14px;
+    line-height: 1.65; font-size: 16px;
+}
+.callout > i { margin-top: 4px; color: var(--biru-terang); font-size: 18px; }
+.callout.catatan { background: var(--kuning-muda); border-left-color: var(--kuning); }
+.callout.catatan > i { color: var(--kuning); }
+.callout.kunci { background: #ecfdf5; border-left-color: var(--hijau); }
+.callout.kunci > i { color: var(--hijau); }
+.callout > div { min-width: 0; }
+
+.tabel-wrap { overflow-x: auto; margin: 0 0 14px; border-radius: 16px; border: 1px solid var(--garis); }
+table { width: 100%; border-collapse: collapse; font-size: 15px; background: #fff; }
+th, td { padding: 11px 14px; text-align: left; vertical-align: top; line-height: 1.5; }
+thead th { background: var(--biru-terang); color: #fff; font-weight: 700; white-space: nowrap; }
+tbody tr:nth-child(even) { background: #f8fafc; }
+tbody td:first-child { font-weight: 700; color: var(--navy); }
+tbody tr + tr td { border-top: 1px solid #e2e8f0; }
+
+/* kartu contoh */
+.contoh { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 18px; padding: 14px 18px; margin: 0 0 12px; }
+.contoh.salah { border-left: 5px solid var(--merah); }
+.contoh.benar { border-left: 5px solid var(--hijau); }
+.contoh .soal { font-size: 17px; font-weight: 800; color: var(--navy); margin: 0 0 8px; }
+.cek { list-style: none; padding: 0 !important; margin: 0 0 8px !important; }
+.cek li { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 4px; font-size: 15px; }
+.cek li::before { font-family: 'Font Awesome 6 Free'; font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+.cek li.ok::before { content: '\f00c'; color: var(--hijau); }
+.cek li.gagal::before { content: '\f00d'; color: var(--merah); }
+.contoh .simpul { margin: 0; font-size: 15px; line-height: 1.6; }
+.lencana { display: inline-block; font-size: 12px; font-weight: 800; padding: 2px 10px; border-radius: 100px; margin-right: 6px; color: #fff; }
+.lencana.y { background: var(--hijau); }
+.lencana.n { background: var(--merah); }
+
+.bentuk { background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 6px 18px 8px; margin-bottom: 12px; }
+
+.langkah-list { counter-reset: lg; list-style: none; padding: 0 !important; }
+.langkah-list li { counter-increment: lg; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 8px; }
+.langkah-list li::before {
+    content: counter(lg); flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--biru-terang);
+    color: #fff; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+
+/* ===== Lanjut belajar ===== */
+.lanjut { margin-top: clamp(28px, 5vw, 44px); }
+.lanjut h3 { font-size: 20px; font-weight: 800; color: var(--navy); margin: 0 0 14px; }
+.lanjut-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.action-card {
+    display: flex; align-items: center; gap: 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px;
+    padding: 16px 20px; text-decoration: none; color: var(--teks); transition: background 0.25s, border-color 0.25s, transform 0.25s;
+}
+.action-card:hover { background: var(--biru-muda); border-color: var(--biru-terang); transform: translateY(-3px); }
+.icon-box {
+    width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0; color: #fff;
+}
+.icon-contoh { background: linear-gradient(135deg, var(--indigo), var(--biru)); }
+.icon-latihan { background: linear-gradient(135deg, #14b8a6, var(--biru-terang)); }
+.card-info h4 { margin: 0 0 4px; font-size: 16px; }
+.card-info p { margin: 0; font-size: 13px; line-height: 1.4; color: var(--teks-redup); }
+
+/* ===== Modal Tujuan Pembelajaran ===== */
+.modal-tujuan {
+    border: 3px solid var(--biru-terang); border-radius: 24px; padding: 0; width: min(560px, calc(100% - 28px));
+    max-height: calc(100dvh - 40px); color: var(--teks); box-shadow: 0 30px 80px rgba(11, 42, 91, 0.3); overflow: hidden;
+}
+.modal-tujuan::backdrop { background: rgba(11, 42, 91, 0.55); backdrop-filter: blur(3px); }
+.modal-tujuan[open] { display: flex; flex-direction: column; animation: modalMasuk 0.25s ease-out; }
+@keyframes modalMasuk { from { opacity: 0; transform: translateY(14px) scale(0.98); } to { opacity: 1; transform: none; } }
+.modal-head {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    padding: 22px 24px 16px; background: var(--biru-muda); border-bottom: 1px solid var(--garis);
+}
+.modal-head h2 { margin: 0 0 4px; font-size: 22px; font-weight: 800; color: var(--navy); }
+.modal-head p { margin: 0; font-size: 13px; color: var(--teks-redup); }
+.modal-close {
+    flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--garis);
+    background: #fff; color: var(--biru); font-size: 16px; cursor: pointer; transition: background 0.2s;
+}
+.modal-close:hover { background: var(--garis); }
+.modal-body { padding: 18px 24px 8px; overflow-y: auto; }
+.modal-body .intro { margin: 0 0 14px; font-size: 14px; color: var(--teks-redup); }
+.tujuan-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.tujuan-list li {
+    display: flex; gap: 14px; align-items: flex-start; padding: 12px 14px; background: #f8fafc;
+    border: 1px solid #e2e8f0; border-radius: 14px; font-size: 14px; line-height: 1.5;
+}
+.tujuan-list .ikon {
+    flex-shrink: 0; width: 32px; height: 32px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--langit), var(--biru-terang)); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+}
+.tujuan-list strong { display: block; color: var(--navy); margin-bottom: 2px; }
+.modal-foot { padding: 14px 24px 22px; }
+.modal-foot button {
+    width: 100%; padding: 13px; border: none; background: linear-gradient(135deg, var(--biru-terang), var(--biru));
+    color: #fff; font: inherit; font-weight: 700; border-radius: 14px; font-size: 15px; cursor: pointer;
+}
+.modal-foot button:hover { filter: brightness(1.08); }
+
+/* ===== Responsif ===== */
+@media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+    .toc { position: static; }
+    .toc ol { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+    .toc a { padding: 7px 10px; background: #fff; border: 1px solid var(--garis); }
+    .toc a .t { display: none; }
+    .toc a.aktif { border-color: var(--biru-terang); }
+    .lanjut-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+    .title-group h2 { letter-spacing: 3px; }
+    .callout { padding: 12px 14px; gap: 10px; }
+    .modal-head, .modal-body, .modal-foot { padding-left: 16px; padding-right: 16px; }
+    .btn-tujuan { width: 100%; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="slide-container">
+    <a href="index.html" class="btn-kembali">
+        <i class="fa-solid fa-arrow-left-long"></i> Menu Utama
+    </a>
+
+    <header>
+        <div class="title-group">
+            <h2>Aljabar &middot; Kelas 7 SMP</h2>
+            <h1>Persamaan Linear Satu Variabel</h1>
+            <p>Penjelasan lengkap, langkah demi langkah, dengan bahasa yang mudah dipahami.</p>
+        </div>
+        <button type="button" class="btn-tujuan" id="btnTujuan" aria-haspopup="dialog">
+            <i class="fa-solid fa-bullseye"></i> Tujuan Pembelajaran
+        </button>
+    </header>
+
+    <div class="layout">
+        <!-- Daftar isi -->
+        <nav class="toc" aria-label="Daftar isi materi">
+            <p class="toc-judul">Daftar Isi</p>
+            <ol>
+                <li><a href="#s1"><span class="no">1</span><span class="t">Apa itu PLSV?</span></a></li>
+                <li><a href="#s2"><span class="no">2</span><span class="t">Cara Mengecek PLSV</span></a></li>
+                <li><a href="#s3"><span class="no">3</span><span class="t">Istilah Penting</span></a></li>
+                <li><a href="#s4"><span class="no">4</span><span class="t">Persamaan Seperti Timbangan</span></a></li>
+                <li><a href="#s5"><span class="no">5</span><span class="t">Empat Aturan Penyelesaian</span></a></li>
+                <li><a href="#s6"><span class="no">6</span><span class="t">Berbagai Bentuk PLSV</span></a></li>
+                <li><a href="#s7"><span class="no">7</span><span class="t">Langkah Umum</span></a></li>
+                <li><a href="#s8"><span class="no">8</span><span class="t">Soal Cerita</span></a></li>
+            </ol>
+        </nav>
+
+        <main class="materi">
+
+            <!-- 1 -->
+            <section id="s1">
+                <h3><span class="no">1</span>Apa itu PLSV?</h3>
+                <div class="callout">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div><strong>PLSV</strong> adalah singkatan dari <strong>P</strong>ersamaan <strong>L</strong>inear <strong>S</strong>atu <strong>V</strong>ariabel.</div>
+                </div>
+                <p>Artinya: kalimat matematika yang memakai tanda "=", hanya punya satu huruf yang nilainya belum diketahui, dan huruf itu tidak punya pangkat (pangkatnya satu).</p>
+                <p>Supaya mudah, kita bahas satu per satu kenapa namanya begitu.</p>
+
+                <h4>Huruf P: Persamaan</h4>
+                <p>Persamaan artinya ada tanda sama dengan (=) di dalam kalimat matematikanya.</p>
+                <p>Tanda "=" seperti timbangan yang seimbang: sisi kiri dan sisi kanan beratnya sama.</p>
+                <ul>
+                    <li>Ada "=" &rarr; <strong>persamaan</strong> (contoh: <span class="rumus">x + 5 = 12</span>)</li>
+                    <li>Tidak ada "=" &rarr; <strong>bukan persamaan</strong> (contoh: <span class="rumus">x + 5 &gt; 8</span>, karena memakai tanda "&gt;" yang artinya "lebih dari")</li>
+                </ul>
+
+                <h4>Huruf L: Linear</h4>
+                <p>Linear artinya "lurus". Kata ini berasal dari kata "line" atau garis.</p>
+                <p>Persamaan disebut linear kalau hurufnya tidak punya pangkat, atau pangkatnya hanya 1. Jadi, tidak ada angka kecil di kanan atas hurufnya.</p>
+                <ul>
+                    <li><span class="rumus">x</span> &rarr; pangkat 1 &rarr; <strong>linear</strong></li>
+                    <li><span class="rumus">x²</span> &rarr; pangkat 2 (dibaca "x kuadrat", artinya x &times; x) &rarr; <strong>bukan linear</strong></li>
+                </ul>
+                <p>Kalau persamaan linear digambar di grafik, hasilnya garis lurus. Kalau ada pangkat 2, hasilnya melengkung.</p>
+
+                <h4>Huruf SV: Satu Variabel</h4>
+                <p>Variabel adalah huruf yang mewakili bilangan rahasia. Bayangkan huruf itu sebagai kotak tertutup yang isinya angka yang belum kita ketahui. Tugas kita adalah menebak isi kotak itu.</p>
+                <p>"Satu variabel" artinya hanya ada satu kotak rahasia, yaitu hanya satu jenis huruf.</p>
+                <ul>
+                    <li>Hanya huruf x &rarr; <strong>satu variabel</strong></li>
+                    <li>Ada huruf x dan y &rarr; <strong>dua variabel</strong> (ada dua kotak rahasia, jadi tidak bisa langsung ditebak)</li>
+                </ul>
+                <div class="callout catatan">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <div><strong>Catatan:</strong> huruf yang sama boleh muncul berkali-kali. Contohnya <span class="rumus">2a + 4 = a + 9</span>. Huruf a muncul dua kali, tetapi jenisnya tetap satu, yaitu a. Jadi, tetap satu variabel.</div>
+                </div>
+            </section>
+
+            <!-- 2 -->
+            <section id="s2">
+                <h3><span class="no">2</span>Cara Mengecek: PLSV atau Bukan?</h3>
+                <p>Untuk memeriksa apakah sebuah kalimat matematika itu PLSV, lakukan tiga langkah pengecekan ini secara berurutan:</p>
+                <div class="tabel-wrap">
+                    <table>
+                        <thead><tr><th>Langkah</th><th>Pertanyaan yang diajukan</th><th>Syarat agar PLSV</th></tr></thead>
+                        <tbody>
+                            <tr><td>Langkah 1</td><td>Apakah ada tanda "="?</td><td>Harus ada</td></tr>
+                            <tr><td>Langkah 2</td><td>Ada berapa jenis huruf?</td><td>Harus hanya satu jenis</td></tr>
+                            <tr><td>Langkah 3</td><td>Berapa pangkat hurufnya?</td><td>Harus pangkat 1 (tidak ada angka kecil di atas huruf)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="callout kunci">
+                    <i class="fa-solid fa-key"></i>
+                    <div><strong>Aturan mainnya:</strong> kalau ketiga langkah lolos, berarti PLSV. Kalau ada satu saja yang gagal, berarti bukan PLSV.</div>
+                </div>
+
+                <h4>Contoh yang termasuk PLSV</h4>
+                <div class="contoh benar">
+                    <p class="soal">a) x + 5 = 12</p>
+                    <ul class="cek">
+                        <li class="ok">Langkah 1: ada tanda "="</li>
+                        <li class="ok">Langkah 2: hanya ada huruf x, jadi satu jenis huruf</li>
+                        <li class="ok">Langkah 3: x tidak punya angka kecil di atasnya, jadi pangkat 1</li>
+                    </ul>
+                    <p class="simpul"><span class="lencana y">PLSV</span>Lolos semua langkah.</p>
+                </div>
+                <div class="contoh benar">
+                    <p class="soal">b) 3y − 2 = 10</p>
+                    <ul class="cek">
+                        <li class="ok">Langkah 1: ada tanda "="</li>
+                        <li class="ok">Langkah 2: hanya ada huruf y (angka 3 di depan y bukan huruf, tetapi pengali)</li>
+                        <li class="ok">Langkah 3: y berpangkat 1</li>
+                    </ul>
+                    <p class="simpul"><span class="lencana y">PLSV</span></p>
+                </div>
+                <div class="contoh benar">
+                    <p class="soal">c) 2a + 4 = a + 9</p>
+                    <ul class="cek">
+                        <li class="ok">Langkah 1: ada tanda "="</li>
+                        <li class="ok">Langkah 2: huruf a muncul di dua tempat, tetapi jenisnya tetap satu, yaitu a</li>
+                        <li class="ok">Langkah 3: a berpangkat 1</li>
+                    </ul>
+                    <p class="simpul"><span class="lencana y">PLSV</span>Hurufnya boleh ada di kiri dan kanan, asalkan jenisnya tetap satu.</p>
+                </div>
+
+                <h4>Contoh yang bukan PLSV</h4>
+                <div class="contoh salah">
+                    <p class="soal">d) x + y = 10</p>
+                    <ul class="cek">
+                        <li class="ok">Langkah 1: ada tanda "="</li>
+                        <li class="gagal">Langkah 2: ada dua jenis huruf, yaitu x dan y (gagal di sini)</li>
+                    </ul>
+                    <p class="simpul"><span class="lencana n">Bukan PLSV</span>Ada dua kotak rahasia, jadi namanya persamaan linear dua variabel.</p>
+                </div>
+                <div class="contoh salah">
+                    <p class="soal">e) x² + 1 = 5</p>
+                    <ul class="cek">
+                        <li class="ok">Langkah 1: ada tanda "="</li>
+                        <li class="ok">Langkah 2: hanya huruf x</li>
+                        <li class="gagal">Langkah 3: x punya pangkat 2 (x² artinya x &times; x) (gagal di sini)</li>
+                    </ul>
+                    <p class="simpul"><span class="lencana n">Bukan PLSV</span>Tidak linear. Bentuk ini disebut persamaan kuadrat.</p>
+                </div>
+                <div class="contoh salah">
+                    <p class="soal">f) x + 5 &gt; 8</p>
+                    <ul class="cek">
+                        <li class="gagal">Langkah 1: tidak ada tanda "=", yang ada tanda "&gt;" (gagal di sini)</li>
+                    </ul>
+                    <p class="simpul"><span class="lencana n">Bukan PLSV</span>Kalimat ini disebut pertidaksamaan, bukan persamaan.</p>
+                </div>
+                <div class="contoh salah">
+                    <p class="soal">g) 5 + 3 = 8</p>
+                    <ul class="cek">
+                        <li class="ok">Langkah 1: ada tanda "="</li>
+                        <li class="gagal">Langkah 2: tidak ada huruf sama sekali (gagal di sini)</li>
+                    </ul>
+                    <p class="simpul"><span class="lencana n">Bukan PLSV</span>Tidak ada kotak rahasia yang harus ditebak, jadi tidak ada variabel.</p>
+                </div>
+
+                <h4>Bentuk umum PLSV</h4>
+                <p>Semua PLSV bisa ditulis dengan bentuk umum, dengan a tidak boleh 0:</p>
+                <span class="rumus-besar">ax + b = c</span>
+                <ul>
+                    <li><strong>x</strong> adalah variabel (kotak rahasia).</li>
+                    <li><strong>a</strong> adalah angka di depan x (disebut koefisien).</li>
+                    <li><strong>b</strong> dan <strong>c</strong> adalah angka biasa (disebut konstanta).</li>
+                </ul>
+                <div class="callout catatan">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <div><strong>Mengapa a tidak boleh 0?</strong> Kalau a = 0, maka ax = 0 dan huruf x hilang. Persamaannya jadi tidak punya variabel lagi, sehingga tidak ada yang bisa ditebak.</div>
+                </div>
+            </section>
+
+            <!-- 3 -->
+            <section id="s3">
+                <h3><span class="no">3</span>Istilah Penting</h3>
+                <p>Istilah-istilah berikut sering dipakai dalam PLSV. Pahami dengan benar supaya tidak bingung saat belajar:</p>
+                <div class="tabel-wrap">
+                    <table>
+                        <thead><tr><th>Istilah</th><th>Artinya</th></tr></thead>
+                        <tbody>
+                            <tr><td>Variabel</td><td>Huruf pengganti bilangan yang belum diketahui</td></tr>
+                            <tr><td>Koefisien</td><td>Angka yang menempel di depan variabel (dikalikan dengan variabel)</td></tr>
+                            <tr><td>Konstanta</td><td>Angka yang berdiri sendiri, tanpa huruf</td></tr>
+                            <tr><td>Suku</td><td>Bagian dari persamaan yang dipisah oleh tanda + atau −</td></tr>
+                            <tr><td>Ruas kiri</td><td>Bagian sebelum tanda "="</td></tr>
+                            <tr><td>Ruas kanan</td><td>Bagian sesudah tanda "="</td></tr>
+                            <tr><td>Penyelesaian</td><td>Nilai variabel yang membuat persamaan menjadi benar</td></tr>
+                            <tr><td>Persamaan ekuivalen</td><td>Persamaan-persamaan yang berbeda bentuk tetapi memiliki penyelesaian yang sama</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 4 -->
+            <section id="s4">
+                <h3><span class="no">4</span>Konsep Dasar: Persamaan Itu Seperti Timbangan</h3>
+                <p>Bayangkan timbangan yang seimbang. Tanda "=" artinya kedua sisi sama berat.</p>
+                <p>Supaya timbangan tetap seimbang, apa pun yang kita lakukan ke satu sisi harus kita lakukan juga ke sisi lainnya. Misalnya, jika kiri ditambah 3 kg, kanan juga harus ditambah 3 kg.</p>
+                <p>Setiap kali kita melakukan hal yang sama pada kedua ruas, kita memperoleh persamaan baru yang ekuivalen (penyelesaiannya tidak berubah).</p>
+                <div class="callout kunci">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                    <div><strong>Tujuan menyelesaikan PLSV:</strong> membuat variabel sendirian di satu ruas (bentuk <span class="rumus">x = ...</span>) supaya ketemu nilainya.</div>
+                </div>
+            </section>
+
+            <!-- 5 -->
+            <section id="s5">
+                <h3><span class="no">5</span>Empat Aturan Menyelesaikan PLSV</h3>
+                <p>Persamaan tetap seimbang jika kita melakukan hal yang sama pada kedua ruas:</p>
+                <ol class="langkah-list">
+                    <li>Menambah kedua ruas dengan bilangan yang sama</li>
+                    <li>Mengurangi kedua ruas dengan bilangan yang sama</li>
+                    <li>Mengalikan kedua ruas dengan bilangan yang sama (bukan nol)</li>
+                    <li>Membagi kedua ruas dengan bilangan yang sama (bukan nol)</li>
+                </ol>
+                <div class="callout kunci">
+                    <i class="fa-solid fa-key"></i>
+                    <div><strong>Kunci mengingat: lawan operasinya.</strong></div>
+                </div>
+                <div class="tabel-wrap">
+                    <table>
+                        <thead><tr><th>Kalau di persamaan ada...</th><th>Kita lawan dengan...</th></tr></thead>
+                        <tbody>
+                            <tr><td>+ (tambah)</td><td>− (kurang)</td></tr>
+                            <tr><td>− (kurang)</td><td>+ (tambah)</td></tr>
+                            <tr><td>× (kali)</td><td>÷ (bagi)</td></tr>
+                            <tr><td>÷ (bagi)</td><td>× (kali)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="callout catatan">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <div><strong>Mengapa tidak boleh dikalikan atau dibagi nol?</strong> Mengalikan kedua ruas dengan nol membuat semuanya menjadi 0 sehingga informasi persamaan hilang, sedangkan pembagian dengan nol tidak terdefinisi dalam matematika.</div>
+                </div>
+            </section>
+
+            <!-- 6 -->
+            <section id="s6">
+                <h3><span class="no">6</span>Cara Menyelesaikan Berbagai Bentuk PLSV</h3>
+                <p>Berikut cara menyelesaikan tiap bentuk PLSV secara umum. Pada semuanya, tujuannya sama: membuat variabel sendirian di satu ruas.</p>
+
+                <div class="bentuk">
+                    <h4>a. Bentuk x + a = b (ada penjumlahan)</h4>
+                    <p>Lawan dari "+ a" adalah "− a". Kurangi kedua ruas dengan a, sehingga diperoleh <span class="rumus">x = b − a</span>.</p>
+                </div>
+                <div class="bentuk">
+                    <h4>b. Bentuk x − a = b (ada pengurangan)</h4>
+                    <p>Lawan dari "− a" adalah "+ a". Tambah kedua ruas dengan a, sehingga diperoleh <span class="rumus">x = b + a</span>.</p>
+                </div>
+                <div class="bentuk">
+                    <h4>c. Bentuk ax = b (ada perkalian)</h4>
+                    <p>ax artinya a &times; x. Lawan dari perkalian adalah pembagian. Bagi kedua ruas dengan a, sehingga diperoleh <span class="rumus">x = b ÷ a</span> (dengan a ≠ 0).</p>
+                </div>
+                <div class="bentuk">
+                    <h4>d. Bentuk x/a = b (ada pembagian)</h4>
+                    <p>Lawan dari pembagian adalah perkalian. Kalikan kedua ruas dengan a, sehingga diperoleh <span class="rumus">x = b × a</span>.</p>
+                </div>
+                <div class="bentuk">
+                    <h4>e. Bentuk ax + b = c (dua langkah)</h4>
+                    <ul>
+                        <li><strong>Langkah 1:</strong> hilangkan konstanta b dengan operasi lawannya pada kedua ruas, sehingga diperoleh <span class="rumus">ax = c − b</span>.</li>
+                        <li><strong>Langkah 2:</strong> hilangkan koefisien a dengan membagi kedua ruas dengan a, sehingga diperoleh <span class="rumus">x = (c − b) ÷ a</span>.</li>
+                    </ul>
+                    <div class="callout catatan">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <div><strong>Tips:</strong> hilangkan dulu angka yang dijumlah/dikurang, baru hilangkan angka yang dikali/dibagi.</div>
+                    </div>
+                </div>
+                <div class="bentuk">
+                    <h4>f. Variabel di kedua ruas</h4>
+                    <p>Jika variabel muncul di ruas kiri dan kanan, kumpulkan semua suku berhuruf di satu ruas dan semua konstanta di ruas lainnya:</p>
+                    <ul>
+                        <li>Pindahkan suku berhuruf dengan menjumlah atau mengurangi kedua ruas dengan suku tersebut.</li>
+                        <li>Pindahkan konstanta dengan cara yang sama ke ruas yang lain.</li>
+                        <li>Sederhanakan, lalu bagi kedua ruas dengan koefisien variabel.</li>
+                    </ul>
+                </div>
+                <div class="bentuk">
+                    <h4>g. Persamaan dengan tanda kurung</h4>
+                    <p>Buka kurung terlebih dahulu memakai sifat distributif: <span class="rumus">a(x + b) = ax + ab</span>. Artinya, bilangan di luar kurung dikalikan ke semua suku di dalam kurung. Setelah kurung terbuka, lanjutkan dengan langkah seperti bentuk di atas.</p>
+                </div>
+                <div class="bentuk">
+                    <h4>h. Persamaan dengan pecahan</h4>
+                    <p>Jika ada pecahan, hilangkan penyebutnya dengan mengalikan kedua ruas dengan penyebut tersebut (atau KPK semua penyebut jika ada beberapa pecahan). Setelah itu, selesaikan seperti persamaan biasa.</p>
+                </div>
+            </section>
+
+            <!-- 7 -->
+            <section id="s7">
+                <h3><span class="no">7</span>Langkah Umum Menyelesaikan PLSV</h3>
+                <ol class="langkah-list">
+                    <li>Buka kurung (kalau ada).</li>
+                    <li>Hilangkan pecahan dengan mengalikan kedua ruas dengan penyebutnya (kalau ada).</li>
+                    <li>Kumpulkan variabel di satu ruas (biasanya kiri) dan angka di ruas lainnya.</li>
+                    <li>Hilangkan angka yang dijumlah/dikurang dengan operasi lawannya.</li>
+                    <li>Hilangkan koefisien dengan membagi kedua ruas dengan koefisien tersebut.</li>
+                    <li>Cek jawaban dengan memasukkannya ke persamaan awal.</li>
+                </ol>
+                <div class="callout kunci">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div><strong>Cara mengecek:</strong> masukkan nilai yang diperoleh ke persamaan awal. Jika ruas kiri sama dengan ruas kanan, jawabannya benar.</div>
+                </div>
+            </section>
+
+            <!-- 8 -->
+            <section id="s8">
+                <h3><span class="no">8</span>Penerapan PLSV pada Soal Cerita</h3>
+                <p>PLSV berguna untuk menyelesaikan masalah sehari-hari seperti harga barang, umur, dan keliling bangun datar. Langkah-langkahnya:</p>
+                <ol class="langkah-list">
+                    <li>Baca soal dengan teliti dan tentukan apa yang ditanyakan.</li>
+                    <li>Misalkan yang ditanya dengan huruf (misal x).</li>
+                    <li>Ubah cerita menjadi persamaan matematika.</li>
+                    <li>Selesaikan persamaannya.</li>
+                    <li>Periksa jawaban pada cerita, lalu jawab dengan kalimat lengkap sesuai pertanyaan.</li>
+                </ol>
+                <h4>Kata kunci yang sering muncul</h4>
+                <div class="tabel-wrap">
+                    <table>
+                        <thead><tr><th>Kata dalam soal</th><th>Diubah menjadi</th></tr></thead>
+                        <tbody>
+                            <tr><td>jumlah, ditambah, lebih dari</td><td>+ (penjumlahan)</td></tr>
+                            <tr><td>selisih, dikurangi, kurang dari</td><td>− (pengurangan)</td></tr>
+                            <tr><td>dikali, kali lipat, ... kali</td><td>× (perkalian)</td></tr>
+                            <tr><td>dibagi, dibagi rata</td><td>÷ (pembagian)</td></tr>
+                            <tr><td>hasilnya, sama dengan, totalnya</td><td>= (sama dengan)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Lanjut belajar -->
+    <div class="lanjut">
+        <h3>Sudah paham? Lanjut belajar</h3>
+        <div class="lanjut-grid">
+            <a href="contohsoal.html" class="action-card">
+                <div class="icon-box icon-contoh"><i class="fa-solid fa-lightbulb"></i></div>
+                <div class="card-info">
+                    <h4>Contoh Soal</h4>
+                    <p>Lihat pembahasan langkah demi langkah.</p>
+                </div>
+            </a>
+            <a href="latihansoal.html" class="action-card">
+                <div class="icon-box icon-latihan"><i class="fa-solid fa-pencil"></i></div>
+                <div class="card-info">
+                    <h4>Latihan Soal</h4>
+                    <p>Uji pemahamanmu dengan 10 soal acak.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tujuan Pembelajaran -->
+<dialog class="modal-tujuan" id="modalTujuan" aria-labelledby="judulTujuan">
+    <div class="modal-head">
+        <div>
+            <h2 id="judulTujuan">Tujuan Pembelajaran</h2>
+            <p>Persamaan Linear Satu Variabel &middot; Kelas 7 SMP</p>
+        </div>
+        <button type="button" class="modal-close" id="btnTutupTujuan" aria-label="Tutup">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <p class="intro">Setelah mempelajari materi ini, kamu diharapkan mampu:</p>
+        <ul class="tujuan-list">
+            <li>
+                <span class="ikon"><i class="fa-solid fa-equals"></i></span>
+                <div>
+                    <strong>Menjelaskan pengertian PLSV</strong>
+                    Menjelaskan arti persamaan, linear, dan satu variabel, serta menyebutkan bentuk umum ax + b = c.
+                </div>
+            </li>
+            <li>
+                <span class="ikon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <div>
+                    <strong>Mengenali PLSV</strong>
+                    Membedakan kalimat yang termasuk PLSV dan yang bukan dengan tiga langkah pengecekan.
+                </div>
+            </li>
+            <li>
+                <span class="ikon"><i class="fa-solid fa-book"></i></span>
+                <div>
+                    <strong>Memahami istilah penting</strong>
+                    Menjelaskan variabel, koefisien, konstanta, suku, ruas, penyelesaian, dan persamaan ekuivalen.
+                </div>
+            </li>
+            <li>
+                <span class="ikon"><i class="fa-solid fa-scale-balanced"></i></span>
+                <div>
+                    <strong>Menerapkan aturan keseimbangan</strong>
+                    Menggunakan operasi yang sama pada kedua ruas untuk memperoleh persamaan yang ekuivalen.
+                </div>
+            </li>
+            <li>
+                <span class="ikon"><i class="fa-solid fa-puzzle-piece"></i></span>
+                <div>
+                    <strong>Menyelesaikan berbagai bentuk PLSV</strong>
+                    Menyelesaikan PLSV dengan penjumlahan, pengurangan, perkalian, pembagian, variabel di kedua ruas, tanda kurung, dan pecahan, lalu memeriksa jawabannya.
+                </div>
+            </li>
+            <li>
+                <span class="ikon"><i class="fa-solid fa-lightbulb"></i></span>
+                <div>
+                    <strong>Menyelesaikan soal cerita</strong>
+                    Mengubah soal cerita menjadi persamaan, menyelesaikannya, dan menjawab dengan kalimat lengkap.
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="modal-foot">
+        <button type="button" id="btnMulai">Mulai Belajar <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></button>
+    </div>
+</dialog>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Modal Tujuan Pembelajaran
+        const modal = document.getElementById('modalTujuan');
+        document.getElementById('btnTujuan').addEventListener('click', () => modal.showModal());
+        document.getElementById('btnTutupTujuan').addEventListener('click', () => modal.close());
+        document.getElementById('btnMulai').addEventListener('click', () => modal.close());
+        modal.addEventListener('click', (e) => {
+            const r = modal.getBoundingClientRect();
+            const diLuar = e.clientX < r.left || e.clientX > r.right ||
+                           e.clientY < r.top || e.clientY > r.bottom;
+            if (diLuar) modal.close();
+        });
+
+        // Tandai bagian materi yang sedang dibaca pada daftar isi
+        const tautan = Array.from(document.querySelectorAll('.toc a'));
+        const bagian = tautan.map(a => document.querySelector(a.getAttribute('href')));
+        function tandai() {
+            let aktif = 0;
+            bagian.forEach((el, i) => {
+                if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.3) aktif = i;
+            });
+            tautan.forEach((a, i) => a.classList.toggle('aktif', i === aktif));
+        }
+        window.addEventListener('scroll', tandai, { passive: true });
+        window.addEventListener('resize', tandai);
+        tandai();
+    });
+</script>
+
+</body>
+</html>

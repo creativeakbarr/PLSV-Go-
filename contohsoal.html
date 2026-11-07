@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contoh Soal PLSV | PLSV Go!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--navy:#0b2a5b;--biru:#1d4ed8;--bt:#3b82f6;--langit:#0ea5e9;--bm:#eff6ff;--garis:#bfdbfe;--teks:#1e293b;--redup:#475569;--hijau:#0f9d77}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:linear-gradient(135deg,#eff6ff,#dbeafe);display:flex;justify-content:center;margin:0;min-height:100dvh;padding:clamp(10px,3vw,24px);font-family:'Urbanist','Segoe UI',system-ui,sans-serif;color:var(--teks)}
+.wrap{background:#fff;width:100%;max-width:1000px;padding:clamp(20px,4vw,40px) clamp(16px,4.5vw,46px);box-shadow:0 30px 80px rgba(11,42,91,.15);border-radius:clamp(20px,3vw,28px);border:3px solid var(--bt);align-self:flex-start}
+:focus-visible{outline:3px solid var(--bt);outline-offset:2px}
+header{margin-bottom:26px}
+.back{display:inline-flex;align-items:center;gap:10px;margin-bottom:18px;padding:9px 18px;background:#fff;color:var(--biru);border:2px solid var(--garis);border-radius:100px;font-weight:800;font-size:14px;text-decoration:none}
+.back:hover{background:var(--bm);border-color:var(--bt)}
+header h2{color:var(--bt);font:600 12px 'JetBrains Mono',monospace;letter-spacing:4px;margin:0 0 8px;text-transform:uppercase}
+header h1{font-size:clamp(26px,6vw,38px);font-weight:800;line-height:1.1;margin:0;color:var(--navy)}
+header p{margin:8px 0 0;color:var(--redup)}
+h3{font-size:clamp(20px,3.4vw,25px);font-weight:800;color:var(--navy);margin:0 0 14px;padding-bottom:10px;border-bottom:3px solid var(--garis)}
+h4{font-size:18px;font-weight:800;color:var(--biru);margin:4px 0 8px}
+p{line-height:1.7;margin:0 0 12px}
+.rumus{font:600 .92em 'JetBrains Mono',monospace;background:var(--bm);border:1px solid var(--garis);color:var(--navy);padding:1px 7px;border-radius:7px;white-space:nowrap}
+section{margin-bottom:40px}
+
+/* pemecah */
+.solver{background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;padding:clamp(14px,3vw,22px);margin-bottom:14px}
+.kolom-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+.kol{--w:var(--bt);background:#fff;border:2px solid var(--w);border-radius:16px;padding:0 0 10px;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden}
+.kol label,.kol .judul{display:block;width:100%;background:var(--w);color:#fff;font-size:12px;font-weight:800;padding:7px 4px;line-height:1.2}
+.kol input,.kol select,.kol .tetap{width:calc(100% - 16px);margin:10px 8px 6px;height:52px;border:2px solid #e2e8f0;border-radius:12px;text-align:center;font:800 22px inherit;font-family:inherit;color:var(--navy);background:#fff;min-width:0}
+.kol select{cursor:pointer;text-align-last:center}
+.kol input:focus,.kol select:focus{border-color:var(--w);outline:3px solid color-mix(in srgb,var(--w) 25%,transparent);outline-offset:0}
+.kol .tetap{display:flex;align-items:center;justify-content:center;background:#f1f5f9;border-color:transparent}
+.kol .tetap.terisi{background:#d1fae5;color:#065f46;font-size:17px}
+.peran{font-size:12px;color:var(--redup);padding:0 8px;line-height:1.3}
+.k1{--w:#3b82f6}.k2{--w:#6366f1}.k3{--w:#f59e0b}.k4{--w:#14b8a6}.k5{--w:#64748b}.k6{--w:#0ea5e9}.k7{--w:#0f9d77}
+.pratinjau{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:18px 0 4px;font:600 clamp(22px,5vw,32px) 'JetBrains Mono',monospace}
+.pratinjau span{padding:2px 10px;border-radius:10px}
+.p1{background:#dbeafe;color:#1d4ed8}.p2{background:#e0e7ff;color:#4338ca}.p3{background:#fef3c7;color:#b45309}.p4{background:#ccfbf1;color:#0f766e}.p5{background:#e2e8f0;color:#334155}.p6{background:#e0f2fe;color:#0369a1}
+.tombol{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:14px}
+.btn{background:linear-gradient(135deg,var(--bt),var(--biru));color:#fff;border:0;border-radius:14px;padding:13px 28px;font:800 16px inherit;font-family:inherit;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.sek{background:#fff;color:var(--biru);border:2px solid var(--garis);border-radius:14px;padding:10px 18px;font:700 14px inherit;font-family:inherit;cursor:pointer}
+.sek:hover,.chip:hover{border-color:var(--bt);background:var(--bm)}
+.pesan{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:10px 14px;border-radius:12px;margin:12px 0 0;font-size:14px}
+[hidden]{display:none!important}
+.steps{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:st}
+.steps li{counter-increment:st;position:relative;background:#fff;border:1px solid #e2e8f0;border-left:5px solid var(--bt);border-radius:16px;padding:12px 16px 12px 56px}
+.steps li::before{content:counter(st);position:absolute;left:14px;top:12px;width:28px;height:28px;border-radius:50%;background:var(--bt);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center}
+.steps h5{margin:0 0 4px;font-size:16px;font-weight:800;color:var(--navy)}
+.steps p{margin:0 0 6px;font-size:15px;line-height:1.6}
+.baris{font:600 15px 'JetBrains Mono',monospace;background:var(--bm);border-radius:10px;padding:6px 12px;margin-bottom:4px;overflow-x:auto;white-space:nowrap}
+.solusi-box{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid var(--hijau);border-radius:18px;padding:16px;text-align:center}
+.solusi-box span{display:block;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#047857}
+.solusi-box strong{display:block;font:600 clamp(26px,6vw,38px) 'JetBrains Mono',monospace;color:#065f46;margin:4px 0}
+.solusi-box small{font-size:14px;color:#065f46}
+
+/* konsep dasar */
+.konsep{background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;padding:clamp(14px,3vw,22px);margin-bottom:18px}
+.konsep h4{margin:0 0 8px}
+.konsep ul{margin:0 0 14px;padding-left:22px;line-height:1.7}
+.konsep li{margin-bottom:4px}
+.konsep .tabel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.konsep .kt{background:#fff;border:1px solid var(--garis);border-left:5px solid var(--bt);border-radius:14px;padding:10px 14px}
+.konsep .kt strong{display:block;color:var(--navy);font-size:15px;margin-bottom:2px}
+.konsep .kt span{font-size:14px;color:var(--redup);line-height:1.5;display:block}
+.konsep .tip{background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:12px;padding:10px 14px;font-size:14px;line-height:1.6;margin:0}
+
+/* daftar contoh */
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+.chip{border:2px solid var(--garis);background:#fff;color:var(--navy);border-radius:100px;padding:8px 16px;font:700 14px inherit;font-family:inherit;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--bt);border-color:var(--bt);color:#fff}
+.chip small{opacity:.75;margin-left:4px}
+.bar .sek{margin-left:auto}
+.bar .sek~.sek{margin-left:0}
+#daftar{display:flex;flex-direction:column;gap:10px}
+details{background:#f8fafc;border:1px solid #e2e8f0;border-left:5px solid var(--bt);border-radius:16px}
+details[open]{background:#fff}
+summary{display:flex;gap:14px;align-items:center;padding:12px 16px;cursor:pointer;list-style:none;font-weight:800;color:var(--navy);font-size:17px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:'\f078';font-family:'Font Awesome 6 Free';font-weight:900;font-size:12px;margin-left:auto;color:var(--redup);transition:transform .2s}
+details[open] summary::after{transform:rotate(180deg)}
+.no{flex-shrink:0;min-width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--bt),var(--biru));color:#fff;font-size:15px;display:flex;align-items:center;justify-content:center}
+.sq{font-family:'JetBrains Mono',monospace;font-size:16px}
+.cerita summary{align-items:flex-start;font-weight:700;line-height:1.5}
+.cerita .no{background:linear-gradient(135deg,#14b8a6,var(--bt))}
+.isi{padding:2px 18px 16px 18px}
+.isi .baris{margin-bottom:6px}
+.isi .baris.j{background:#d1fae5;color:#065f46}
+.isi .jadi{margin:10px 0 0;font-weight:700;color:#065f46}
+.strategi{background:#eef2ff;border:1px solid #c7d2fe;color:#3730a3;border-radius:12px;padding:8px 12px;font-size:14px;line-height:1.55;margin:0 0 12px}
+.strategi i{margin-right:6px}
+.lg{margin-bottom:10px}
+.lg .baris{margin-bottom:4px}
+.ket{margin:0 0 0 4px;padding:2px 0 2px 12px;border-left:3px solid var(--garis);font-size:14px;line-height:1.55;color:var(--redup)}
+.ket b{color:var(--biru)}
+.tanpa-ket .ket,.tanpa-ket .strategi{display:none}
+.cek{margin:12px 0 0;background:#f0fdf4;border:1px dashed #86efac;border-radius:12px;padding:8px 12px;font-size:14px;color:#166534;line-height:1.55}
+.tanpa-ket .cek{display:none}
+.lanjut{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.card{display:flex;align-items:center;gap:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;padding:16px 20px;text-decoration:none;color:var(--teks)}
+.card:hover{background:var(--bm);border-color:var(--bt)}
+.card i{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;color:#fff;background:linear-gradient(135deg,#14b8a6,var(--bt))}
+.card h4{margin:0 0 4px;font-size:16px;color:var(--teks)}.card p{margin:0;font-size:13px;color:var(--redup)}
+.keluar{display:block;padding:14px;text-align:center;color:#64748b;text-decoration:none;border:2px dashed var(--garis);border-radius:16px;font-size:14px}
+.keluar:hover{border-color:var(--bt);color:var(--biru)}
+@media(max-width:760px){.kolom-row{grid-template-columns:repeat(3,minmax(0,1fr))}.k7{grid-column:1/-1}.lanjut{grid-template-columns:1fr}.konsep .tabel{grid-template-columns:1fr}.bar .sek{margin-left:0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a href="index.html" class="back" aria-label="Kembali ke Menu Utama"><i class="fa-solid fa-arrow-left-long"></i><span>Kembali</span></a>
+  <h2>Aljabar &middot; Kelas 7 SMP</h2>
+  <h1>Contoh Soal PLSV</h1>
+  <p>Pelajari 50 contoh soal beserta langkah penyelesaian dan penjelasannya.</p>
+</header>
+
+<section id="contoh">
+  <div class="konsep">
+    <h4><i class="fa-solid fa-lightbulb" style="margin-right:8px"></i>Konsep Dasar Sebelum Mulai</h4>
+    <p><strong>PLSV</strong> (Persamaan Linear Satu Variabel) adalah kalimat matematika yang memakai tanda "=" dan hanya memiliki <strong>satu variabel</strong> berpangkat satu, misalnya <span class="rumus">2x − 7 = 3</span>. Tujuan kita adalah mencari nilai variabel yang membuat kedua ruas bernilai sama.</p>
+    <ul>
+      <li><strong>Persamaan itu seperti timbangan seimbang.</strong> Apa pun yang kamu lakukan pada ruas kiri harus kamu lakukan juga pada ruas kanan, supaya timbangan tetap seimbang.</li>
+      <li><strong>Tujuan akhirnya</strong> adalah membuat variabel berdiri sendiri, yaitu bentuk <span class="rumus">x = angka</span>.</li>
+    </ul>
+    <div class="tabel">
+      <div class="kt"><strong>1. Hilangkan kurung (jika ada)</strong><span>Kalikan angka di luar kurung dengan semua suku di dalamnya: a(b + c) = ab + ac.</span></div>
+      <div class="kt"><strong>2. Kumpulkan suku sejenis</strong><span>Pindahkan suku yang memuat variabel ke satu ruas (biasanya kiri), dan konstanta ke ruas lainnya (kanan).</span></div>
+      <div class="kt"><strong>3. Pindah ruas = ganti tanda</strong><span>+ menjadi −, − menjadi +, kali menjadi bagi. Ini sama saja dengan menambah/mengurangi kedua ruas dengan bilangan yang sama.</span></div>
+      <div class="kt"><strong>4. Bagi dengan koefisien</strong><span>Jika tersisa bentuk <span class="rumus">ax = c</span>, bagi kedua ruas dengan a sehingga x = c ÷ a.</span></div>
+    </div>
+    <p class="tip"><strong>Tips:</strong> setelah mendapat jawaban, selalu periksa dengan memasukkannya kembali ke persamaan awal. Jika ruas kiri dan kanan sama, jawabanmu benar.</p>
+  </div>
+
+  <p>Pilih jenis soal, lalu ketuk soal untuk melihat langkahnya. Coba kerjakan sendiri dulu sebelum membuka pembahasan. Penjelasan di bawah tiap langkah bisa disembunyikan dengan tombol di sebelah kanan.</p>
+  <div class="bar" id="filter"></div>
+  <div id="daftar"></div>
+</section>
+
+<div>
+  <h3 style="border:0;margin-bottom:12px">Sudah paham? Lanjut belajar</h3>
+  <div class="lanjut">
+    <a href="materi.html" class="card"><i class="fa-solid fa-book-open"></i><div><h4>Materi</h4><p>Baca lagi penjelasan lengkapnya.</p></div></a>
+    <a href="latihansoal.html" class="card"><i class="fa-solid fa-pencil"></i><div><h4>Latihan Soal</h4><p>Uji pemahamanmu dengan 10 soal acak.</p></div></a>
+  </div>
+</div>
+</div>
+
+<script>
+/* ===== Daftar contoh soal: [jenis, soal, langkah (dipisah |), kalimat jawaban (soal cerita)] ===== */
+const JENIS={d:'Satu & dua langkah',b:'Variabel di kedua ruas',k:'Tanda kurung',c:'Soal cerita'};
+const STRATEGI={
+  d:'Strategi: pindahkan konstanta ke ruas kanan (tanda berubah), lalu bagi dengan koefisien jika ada.',
+  b:'Strategi: kumpulkan suku variabel di ruas kiri dan konstanta di ruas kanan (tanda berubah saat pindah ruas), lalu selesaikan seperti persamaan biasa.',
+  k:'Strategi: hilangkan kurung dengan sifat distributif terlebih dahulu, baru selesaikan seperti persamaan biasa.',
+  c:'Strategi: misalkan yang ditanyakan dengan variabel, ubah kalimat soal menjadi persamaan, selesaikan, lalu tulis kesimpulan dengan satuannya.'
+};
+const DATA=[
+['d','2x − 7 = 3','2x = 3 + 7|2x = 10|x = 5'],
+['b','5x − 2 = x + 10','5x − x = 10 + 2|4x = 12|x = 3'],
+['b','10x − 6 = 9 + 7x','10x − 7x = 9 + 6|3x = 15|x = 5'],
+['d','3x + 2 = 8','3x = 8 − 2|3x = 6|x = 2'],
+['b','5x − 4 = 2 − x','5x + x = 2 + 4|6x = 6|x = 1'],
+['d','x + 3 = 9','x = 9 − 3|x = 6'],
+['d','x − 4 = 6','x = 6 + 4|x = 10'],
+['d','x + 5 = 8','x = 8 − 5|x = 3'],
+['b','3x + 5 = 10 + 2x','3x − 2x = 10 − 5|x = 5'],
+['b','8y − 14 = 5y + 1','8y − 5y = 1 + 14|3y = 15|y = 5'],
+['b','9x + 7 = 5x + 11','9x − 5x = 11 − 7|4x = 4|x = 1'],
+['b','5x + 8 = 3x + 16','5x − 3x = 16 − 8|2x = 8|x = 4'],
+['b','3y − 6 = y + 10','3y − y = 10 + 6|2y = 16|y = 8'],
+['d','2p − 3 = 5','2p = 5 + 3|2p = 8|p = 4'],
+['b','3u + 5 = 10 + 2u','3u − 2u = 10 − 5|u = 5'],
+['b','4p − 3 = p + 6','4p − p = 6 + 3|3p = 9|p = 3'],
+['b','3y − 1 = y + 11','3y − y = 11 + 1|2y = 12|y = 6'],
+['d','3y = 21','y = 21 ÷ 3|y = 7'],
+['d','4x − 7 = 17','4x = 17 + 7|4x = 24|x = 6'],
+['d','5p + 2 = 32','5p = 32 − 2|5p = 30|p = 6'],
+['c','Tiga buku tulis memiliki harga Rp 24.000. Jika harga setiap buku sama, berapakah harga satu buku?','Misalkan harga satu buku = x|3x = 24.000|x = 8.000','Jadi, harga satu buku adalah Rp 8.000.'],
+['c','Sebuah pita dipotong sepanjang 8 cm sehingga tersisa 17 cm. Berapa panjang pita semula?','Misalkan panjang pita semula = x|x − 8 = 17|x = 17 + 8|x = 25','Jadi, panjang pita semula adalah 25 cm.'],
+['c','Doni mempunyai 4 kali jumlah kelereng Budi. Jika jumlah kelereng Doni 36, berapa jumlah kelereng Budi?','Misalkan jumlah kelereng Budi = x|4x = 36|x = 36 ÷ 4|x = 9','Jadi, Budi mempunyai 9 kelereng.'],
+['c','Harga sebuah pensil Rp 5.000. Harga pensil itu Rp 2.000 lebih mahal daripada harga sebuah penghapus. Berapakah harga penghapus?','Misalkan harga penghapus = x|x + 2.000 = 5.000|x = 5.000 − 2.000|x = 3.000','Jadi, harga penghapus adalah Rp 3.000.'],
+['c','Umur Rina ditambah 7 tahun menjadi 19 tahun. Berapakah umur Rina sekarang?','Misalkan umur Rina = x|x + 7 = 19|x = 19 − 7|x = 12','Jadi, umur Rina sekarang 12 tahun.'],
+['c','Uang Andi setelah mendapat tambahan Rp 15.000 menjadi Rp 40.000. Berapa uang Andi sebelum mendapat tambahan?','Misalkan uang awal Andi = x|x + 15.000 = 40.000|x = 40.000 − 15.000|x = 25.000','Jadi, uang awal Andi adalah Rp 25.000.'],
+['c','Siti membeli 4 roti dengan harga yang sama dan membayar Rp 32.000. Berapakah harga satu roti?','Misalkan harga satu roti = x|4x = 32.000|x = 32.000 ÷ 4|x = 8.000','Jadi, harga satu roti adalah Rp 8.000.'],
+['c','Akbar memiliki tabungan Rp 20.000. Ia menabung dengan jumlah yang sama setiap minggu selama 4 minggu sehingga tabungannya menjadi Rp 100.000. Berapa uang yang ditabung setiap minggu?','Misalkan tabungan setiap minggu = x|20.000 + 4x = 100.000|4x = 100.000 − 20.000|4x = 80.000|x = 20.000','Jadi, Akbar menabung Rp 20.000 setiap minggu.'],
+['c','Ibu membeli beberapa kilogram jeruk dengan harga Rp 18.000 per kilogram. Total pembayaran adalah Rp 90.000. Berapa kilogram jeruk yang dibeli Ibu?','Misalkan jumlah jeruk = x kg|18.000x = 90.000|x = 90.000 ÷ 18.000|x = 5','Jadi, Ibu membeli 5 kg jeruk.'],
+['c','Panjang persegi panjang 5 cm lebih besar daripada lebarnya. Jika panjangnya 17 cm, tentukan lebarnya.','Misalkan lebar = x cm|x + 5 = 17|x = 17 − 5|x = 12','Jadi, lebar persegi panjang adalah 12 cm.'],
+['b','3x + 7 = 2x + 15','3x − 2x = 15 − 7|x = 8'],
+['b','5a − 4 = 3a + 10','5a − 3a = 10 + 4|2a = 14|a = 7'],
+['b','7b + 5 = 4b + 20','7b − 4b = 20 − 5|3b = 15|b = 5'],
+['k','4(x + 2) = 24','4x + 8 = 24|4x = 24 − 8|4x = 16|x = 4'],
+['b','3y − 5 = 2y + 4','3y − 2y = 4 + 5|y = 9'],
+['k','3(2x + 1) = 21','6x + 3 = 21|6x = 21 − 3|6x = 18|x = 3'],
+['d','y + 9 = 25','y = 25 − 9|y = 16'],
+['b','7a − 13 = 4a + 8','7a − 4a = 8 + 13|3a = 21|a = 7'],
+['k','4(x − 3) = 2x + 10','4x − 12 = 2x + 10|4x − 2x = 10 + 12|2x = 22|x = 11'],
+['b','4x + 11 = 2x + 25','4x − 2x = 25 − 11|2x = 14|x = 7'],
+['b','9x − 14 = 6x + 10','9x − 6x = 10 + 14|3x = 24|x = 8'],
+['k','5(x + 3) = 40','5x + 15 = 40|5x = 40 − 15|5x = 25|x = 5'],
+['d','2x + 13 = 31','2x = 31 − 13|2x = 18|x = 9'],
+['d','7x + 6 = 55','7x = 55 − 6|7x = 49|x = 7'],
+['b','8x − 5 = 5x + 10','8x − 5x = 10 + 5|3x = 15|x = 5'],
+['b','10x − 18 = 7x + 12','10x − 7x = 12 + 18|3x = 30|x = 10'],
+['k','2(3x + 4) = 38','6x + 8 = 38|6x = 38 − 8|6x = 30|x = 5'],
+['k','4(x − 5) = 28','4x − 20 = 28|4x = 28 + 20|4x = 48|x = 12'],
+['d','6a − 17 = 31','6a = 31 + 17|6a = 48|a = 8'],
+['k','5(x − 2) = 3x + 14','5x − 10 = 3x + 14|5x − 3x = 14 + 10|2x = 24|x = 12']
+];
+
+(function(){
+  const daftar=document.getElementById('daftar'),bar=document.getElementById('filter');
+
+  /* Penjelasan otomatis untuk setiap langkah, berdasarkan bentuk baris sebelum dan sesudahnya */
+  function hurufKanan(s){return /[A-Za-z]/.test(s.split('=')[1]||'');}
+  function jelaskan(jenis,p,ln,i){
+    const l=ln[i],prev=i===0?p:ln[i-1];let m;
+    if(/^Misalkan/.test(l))return '<b>Misalkan.</b> Beri nama (variabel) pada nilai yang ditanyakan supaya bisa ditulis sebagai persamaan.';
+    if(jenis==='c'&&i===1)return '<b>Buat model.</b> Ubah kalimat soal menjadi persamaan matematika memakai variabel tadi.';
+    if(i===0&&p.indexOf('(')>-1)return '<b>Sifat distributif.</b> Kalikan angka di luar kurung dengan setiap suku di dalam kurung, yaitu a(b + c) = ab + ac, sehingga kurung hilang.';
+    if(hurufKanan(prev)&&!hurufKanan(l))return '<b>Kumpulkan suku sejenis.</b> Suku variabel dipindah ke ruas kiri dan konstanta ke ruas kanan. Suku yang pindah ruas berubah tanda: + menjadi −, dan − menjadi +.';
+    if(m=l.match(/^[A-Za-z] = [\d.]+ ÷ ([\d.]+)$/))return '<b>Bagi kedua ruas.</b> Variabel dikalikan '+m[1]+', jadi kedua ruas dibagi '+m[1]+' (lawan dari kali adalah bagi) agar variabel berdiri sendiri.';
+    if(/^[\d.]*[A-Za-z] = [\d.]+ [+−] [\d.]+$/.test(l)){
+      const baru=l.match(/ ([+−]) /)[1],lama=baru==='+'?'−':'+';
+      return '<b>Pindahkan konstanta.</b> Konstanta dipindah ke ruas kanan dan tandanya berubah: tadinya '+lama+', sekarang '+baru+'. Hasilnya sama dengan '+(baru==='+'?'menambah':'mengurangi')+' kedua ruas dengan bilangan itu.';
+    }
+    if(/^[A-Za-z] = −?[\d.]+$/.test(l)){
+      if(m=prev.match(/^([\d.]+)[A-Za-z] = /))return '<b>Bagi kedua ruas dengan '+m[1]+'</b> (koefisien variabel) agar variabel berdiri sendiri. Hasilnya adalah nilai variabel yang dicari.';
+      return '<b>Hitung.</b> Selesaikan operasi di ruas kanan. Inilah nilai variabel yang dicari.';
+    }
+    if(/^[\d.]*[A-Za-z] = [\d.]+$/.test(l))return '<b>Sederhanakan.</b> Hitung bilangan di ruas kanan, dan gabungkan suku sejenis di ruas kiri jika ada.';
+    return '<b>Sederhanakan</b> persamaan.';
+  }
+  function cek(p,ln){
+    const m=ln[ln.length-1].match(/^([A-Za-z]) = ([\d.]+)$/);
+    return m?'Periksa: masukkan '+m[1]+' = '+m[2]+' ke persamaan awal ('+p+'). Jika ruas kiri sama dengan ruas kanan, jawaban benar.':'';
+  }
+
+  DATA.forEach(function(r,i){
+    const d=document.createElement('details');d.dataset.j=r[0];
+    const ln=r[2].split('|'),cer=r[0]==='c';
+    if(cer)d.className='cerita';
+    d.innerHTML='<summary><span class="no">'+(i+1)+'</span><span'+(cer?'':' class="sq"')+'>'+r[1]+'</span></summary><div class="isi">'+
+      '<p class="strategi"><i class="fa-solid fa-compass"></i>'+STRATEGI[r[0]]+'</p>'+
+      ln.map(function(t,n){return '<div class="lg"><div class="baris'+(n===ln.length-1?' j':'')+'">'+t+'</div><p class="ket">'+jelaskan(r[0],r[1],ln,n)+'</p></div>';}).join('')+
+      (r[3]?'<p class="jadi">'+r[3]+'</p>':'')+
+      (cer?'':'<p class="cek"><i class="fa-solid fa-circle-check" style="margin-right:6px"></i>'+cek(r[1],ln)+'</p>')+'</div>';
+    daftar.appendChild(d);
+  });
+  const opsi=[['semua','Semua',DATA.length]].concat(Object.keys(JENIS).map(function(k){return [k,JENIS[k],DATA.filter(function(r){return r[0]===k;}).length];}));
+  opsi.forEach(function(o,i){
+    const b=document.createElement('button');b.type='button';b.className='chip';b.setAttribute('aria-pressed',i===0);
+    b.innerHTML=o[1]+'<small>'+o[2]+'</small>';
+    b.onclick=function(){
+      bar.querySelectorAll('.chip').forEach(function(c){c.setAttribute('aria-pressed',c===b);});
+      daftar.querySelectorAll('details').forEach(function(d){d.hidden=o[0]!=='semua'&&d.dataset.j!==o[0];});
+    };
+    bar.appendChild(b);
+  });
+  const t=document.createElement('button');t.type='button';t.className='sek';t.textContent='Buka semua';
+  t.onclick=function(){
+    const buka=t.textContent==='Buka semua';
+    daftar.querySelectorAll('details:not([hidden])').forEach(function(d){d.open=buka;});
+    t.textContent=buka?'Tutup semua':'Buka semua';
+  };
+  bar.appendChild(t);
+  const k=document.createElement('button');k.type='button';k.className='sek';k.textContent='Sembunyikan penjelasan';k.setAttribute('aria-pressed','false');
+  k.onclick=function(){
+    const sembunyi=daftar.classList.toggle('tanpa-ket');
+    k.textContent=sembunyi?'Tampilkan penjelasan':'Sembunyikan penjelasan';
+    k.setAttribute('aria-pressed',sembunyi);
+  };
+  bar.appendChild(k);
+})();
+</script>
+
+</body>
+</html>

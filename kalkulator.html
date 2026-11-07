@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator PLSV | PLSV Go!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--navy:#0b2a5b;--biru:#1d4ed8;--bt:#3b82f6;--langit:#0ea5e9;--bm:#eff6ff;--garis:#bfdbfe;--teks:#1e293b;--redup:#475569;--hijau:#0f9d77}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:linear-gradient(135deg,#eff6ff,#dbeafe);display:flex;justify-content:center;margin:0;min-height:100dvh;padding:clamp(10px,3vw,24px);font-family:'Urbanist','Segoe UI',system-ui,sans-serif;color:var(--teks)}
+.wrap{background:#fff;width:100%;max-width:1000px;padding:clamp(20px,4vw,40px) clamp(16px,4.5vw,46px);box-shadow:0 30px 80px rgba(11,42,91,.15);border-radius:clamp(20px,3vw,28px);border:3px solid var(--bt);align-self:flex-start}
+:focus-visible{outline:3px solid var(--bt);outline-offset:2px}
+header{margin-bottom:26px}
+.back{display:inline-flex;align-items:center;gap:10px;margin-bottom:18px;padding:9px 18px;background:#fff;color:var(--biru);border:2px solid var(--garis);border-radius:100px;font-weight:800;font-size:14px;text-decoration:none}
+.back:hover{background:var(--bm);border-color:var(--bt)}
+header h2{color:var(--bt);font:600 12px 'JetBrains Mono',monospace;letter-spacing:4px;margin:0 0 8px;text-transform:uppercase}
+header h1{font-size:clamp(26px,6vw,38px);font-weight:800;line-height:1.1;margin:0;color:var(--navy)}
+header p{margin:8px 0 0;color:var(--redup)}
+h3{font-size:clamp(20px,3.4vw,25px);font-weight:800;color:var(--navy);margin:0 0 14px;padding-bottom:10px;border-bottom:3px solid var(--garis)}
+h4{font-size:18px;font-weight:800;color:var(--biru);margin:4px 0 8px}
+p{line-height:1.7;margin:0 0 12px}
+.rumus{font:600 .92em 'JetBrains Mono',monospace;background:var(--bm);border:1px solid var(--garis);color:var(--navy);padding:1px 7px;border-radius:7px;white-space:nowrap}
+section{margin-bottom:40px}
+
+.cara{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 18px}
+.cara div{background:#f8fafc;border:1px solid var(--garis);border-left:5px solid var(--bt);border-radius:14px;padding:10px 14px;font-size:14px;line-height:1.5;color:var(--redup)}
+.cara strong{display:block;color:var(--navy);font-size:15px;margin-bottom:2px}
+
+.solver{background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;padding:clamp(14px,3vw,22px);margin-bottom:14px}
+.kolom-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+.kol{--w:var(--bt);background:#fff;border:2px solid var(--w);border-radius:16px;padding:0 0 10px;display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden}
+.kol label,.kol .judul{display:block;width:100%;background:var(--w);color:#fff;font-size:12px;font-weight:800;padding:7px 4px;line-height:1.2}
+.kol input,.kol select,.kol .tetap{width:calc(100% - 16px);margin:10px 8px 6px;height:52px;border:2px solid #e2e8f0;border-radius:12px;text-align:center;font:800 22px inherit;font-family:inherit;color:var(--navy);background:#fff;min-width:0}
+.kol select{cursor:pointer;text-align-last:center}
+.kol input:focus,.kol select:focus{border-color:var(--w);outline:3px solid color-mix(in srgb,var(--w) 25%,transparent);outline-offset:0}
+.kol .tetap{display:flex;align-items:center;justify-content:center;background:#f1f5f9;border-color:transparent}
+.kol .tetap.terisi{background:#d1fae5;color:#065f46;font-size:17px}
+.peran{font-size:12px;color:var(--redup);padding:0 8px;line-height:1.3}
+.k1{--w:#3b82f6}.k2{--w:#6366f1}.k3{--w:#f59e0b}.k4{--w:#14b8a6}.k5{--w:#64748b}.k6{--w:#0ea5e9}.k7{--w:#0f9d77}
+.pratinjau{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:18px 0 4px;font:600 clamp(22px,5vw,32px) 'JetBrains Mono',monospace}
+.pratinjau span{padding:2px 10px;border-radius:10px}
+.p1{background:#dbeafe;color:#1d4ed8}.p2{background:#e0e7ff;color:#4338ca}.p3{background:#fef3c7;color:#b45309}.p4{background:#ccfbf1;color:#0f766e}.p5{background:#e2e8f0;color:#334155}.p6{background:#e0f2fe;color:#0369a1}
+.tombol{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:14px}
+.btn{background:linear-gradient(135deg,var(--bt),var(--biru));color:#fff;border:0;border-radius:14px;padding:13px 28px;font:800 16px inherit;font-family:inherit;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.sek{background:#fff;color:var(--biru);border:2px solid var(--garis);border-radius:14px;padding:10px 18px;font:700 14px inherit;font-family:inherit;cursor:pointer}
+.sek:hover{border-color:var(--bt);background:var(--bm)}
+.pesan{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:10px 14px;border-radius:12px;margin:12px 0 0;font-size:14px}
+[hidden]{display:none!important}
+.steps{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:st}
+.steps li{counter-increment:st;position:relative;background:#fff;border:1px solid #e2e8f0;border-left:5px solid var(--bt);border-radius:16px;padding:12px 16px 12px 56px}
+.steps li::before{content:counter(st);position:absolute;left:14px;top:12px;width:28px;height:28px;border-radius:50%;background:var(--bt);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center}
+.steps h5{margin:0 0 4px;font-size:16px;font-weight:800;color:var(--navy)}
+.steps p{margin:0 0 6px;font-size:15px;line-height:1.6}
+.baris{font:600 15px 'JetBrains Mono',monospace;background:var(--bm);border-radius:10px;padding:6px 12px;margin-bottom:4px;overflow-x:auto;white-space:nowrap}
+.solusi-box{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid var(--hijau);border-radius:18px;padding:16px;text-align:center}
+.solusi-box span{display:block;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#047857}
+.solusi-box strong{display:block;font:600 clamp(26px,6vw,38px) 'JetBrains Mono',monospace;color:#065f46;margin:4px 0}
+.solusi-box small{font-size:14px;color:#065f46}
+
+.lanjut{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.card{display:flex;align-items:center;gap:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;padding:16px 20px;text-decoration:none;color:var(--teks)}
+.card:hover{background:var(--bm);border-color:var(--bt)}
+.card i{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;color:#fff;background:linear-gradient(135deg,#14b8a6,var(--bt))}
+.card h4{margin:0 0 4px;font-size:16px;color:var(--teks)}.card p{margin:0;font-size:13px;color:var(--redup)}
+@media(max-width:760px){.kolom-row{grid-template-columns:repeat(3,minmax(0,1fr))}.k7{grid-column:1/-1}.lanjut,.cara{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a href="index.html" class="back" aria-label="Kembali ke Menu Utama"><i class="fa-solid fa-arrow-left-long"></i><span>Kembali</span></a>
+  <h2>Aljabar &middot; Kelas 7 SMP</h2>
+  <h1>Kalkulator PLSV</h1>
+  <p>Masukkan persamaanmu, lalu lihat nilai variabel beserta langkah penyelesaiannya.</p>
+</header>
+
+<section id="pemecah">
+  <div class="cara">
+    <div><strong>1. Isi kolom</strong>Tulis koefisien, variabel, tanda, konstanta, dan hasil ruas kanan.</div>
+    <div><strong>2. Tekan Lihat Hasil</strong>Kalkulator menyelesaikan persamaan <span class="rumus">ax + b = c</span> atau <span class="rumus">ax − b = c</span>.</div>
+    <div><strong>3. Pelajari langkahnya</strong>Baca setiap langkah, lalu cocokkan dengan pekerjaanmu sendiri.</div>
+  </div>
+
+  <h3>Masukkan Persamaan</h3>
+  <p>Contohnya <span class="rumus">2x + 5 = 7</span>: koefisien 2, variabel x, tanda +, konstanta 5, dan hasil ruas kanan 7.</p>
+  <form class="solver" id="solverForm" novalidate>
+    <div class="kolom-row">
+      <div class="kol k1"><label for="inA">Koefisien</label><input id="inA" type="number" step="1" inputmode="numeric" placeholder="2" autocomplete="off"><span class="peran">angka di depan variabel</span></div>
+      <div class="kol k2"><label for="inV">Variabel</label><input id="inV" type="text" maxlength="1" value="x" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="peran">kotak rahasia</span></div>
+      <div class="kol k3"><label for="inOp">Tanda operasi</label><select id="inOp"><option value="+">+</option><option value="−">−</option></select><span class="peran">tambah atau kurang</span></div>
+      <div class="kol k4"><label for="inB">Konstanta</label><input id="inB" type="number" step="1" min="0" inputmode="numeric" placeholder="5" autocomplete="off"><span class="peran">angka tanpa huruf</span></div>
+      <div class="kol k5"><span class="judul">Sama dengan</span><div class="tetap" aria-hidden="true">=</div><span class="peran">tanda keseimbangan</span></div>
+      <div class="kol k6"><label for="inC">Hasil ruas kanan</label><input id="inC" type="number" step="1" inputmode="numeric" placeholder="7" autocomplete="off"><span class="peran">bilangan setelah "="</span></div>
+      <div class="kol k7"><span class="judul">Solusi</span><output class="tetap" id="outSolusi" for="inA inV inOp inB inC">?</output><span class="peran">nilai variabel</span></div>
+    </div>
+    <div class="pratinjau" id="pratinjau" aria-live="polite"></div>
+    <div class="tombol">
+      <button type="submit" class="btn"><i class="fa-solid fa-wand-magic-sparkles" style="margin-right:8px"></i>Lihat Hasil</button>
+      <button type="button" class="sek" id="btnContoh">Isi contoh 2x + 5 = 7</button>
+      <button type="button" class="sek" id="btnHapus">Hapus</button>
+    </div>
+    <p class="pesan" id="pesan" role="alert" hidden></p>
+  </form>
+  <div id="hasil" aria-live="polite" hidden></div>
+</section>
+
+<div>
+  <h3 style="border:0;margin-bottom:12px">Lanjut belajar</h3>
+  <div class="lanjut">
+    <a href="contohsoal.html" class="card"><i class="fa-solid fa-lightbulb"></i><div><h4>Contoh Soal</h4><p>Lihat 50 soal beserta pembahasannya.</p></div></a>
+    <a href="evaluasi.html" class="card"><i class="fa-solid fa-pencil"></i><div><h4>Evaluasi</h4><p>Uji pemahamanmu sekarang.</p></div></a>
+  </div>
+</div>
+</div>
+
+<script>
+/* ===== Kalkulator PLSV ===== */
+const MIN='−';
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return a;};
+const num=n=>(n<0?MIN+Math.abs(n):String(n));
+const par=n=>(n<0?'('+num(n)+')':num(n));
+function frac(n,d){if(d<0){n=-n;d=-d;}const g=gcd(n,d)||1;return{n:n/g,d:d/g};}
+const fs=f=>(f.d===1?num(f.n):num(f.n)+'/'+f.d);
+const parf=f=>(f.n<0?'('+fs(f)+')':fs(f));
+const koef=(a,v)=>(a===1?v:a===-1?MIN+v:num(a)+v);
+function desimal(f){
+  if(f.d===1)return'';
+  let d=f.d;while(d%2===0)d/=2;while(d%5===0)d/=5;
+  const t=(Math.round((f.n/f.d)*1000)/1000).toString().replace('.',',').replace('-',MIN);
+  return(d===1?' = ':' ≈ ')+t;
+}
+function selesaikan(a,b,plus,c,v){
+  const op=plus?'+':MIN,lawan=plus?MIN:'+',k=plus?c-b:c+b,x=frac(k,a);
+  const pers=koef(a,v)+' '+op+' '+num(b)+' = '+num(c),langkah=[];
+  if(b===0){
+    langkah.push({judul:'Hilangkan konstanta',teks:'Konstanta b = 0, jadi tidak ada angka yang perlu dihilangkan dari ruas kiri.',baris:[koef(a,v)+' = '+num(c)]});
+  }else{
+    langkah.push({judul:'Hilangkan konstanta',
+      teks:plus?'Ada + '+b+' di ruas kiri. Lawan dari + '+b+' adalah − '+b+', jadi kurangi kedua ruas dengan '+b+'.':'Ada − '+b+' di ruas kiri. Lawan dari − '+b+' adalah + '+b+', jadi tambah kedua ruas dengan '+b+'.',
+      baris:[koef(a,v)+' '+op+' '+num(b)+' '+lawan+' '+num(b)+' = '+num(c)+' '+lawan+' '+num(b),koef(a,v)+' = '+num(k)]});
+  }
+  if(a===1){
+    langkah.push({judul:'Hilangkan koefisien',teks:'Koefisien '+v+' sudah 1, jadi tidak perlu dibagi.',baris:[v+' = '+num(k)]});
+  }else{
+    langkah.push({judul:'Hilangkan koefisien',teks:'Lawan dari perkalian adalah pembagian. Bagi kedua ruas dengan '+num(a)+'.',
+      baris:[koef(a,v)+' ÷ '+par(a)+' = '+num(k)+' ÷ '+par(a),v+' = '+fs(x)+desimal(x)]});
+  }
+  const kiri=frac(a*x.n+(plus?1:-1)*b*x.d,x.d),benar=kiri.d===1&&kiri.n===c;
+  const sub=(a===1?fs(x):num(a)+' × '+parf(x))+(b===0?'':' '+op+' '+num(b));
+  langkah.push({judul:'Periksa jawaban',teks:'Masukkan '+v+' = '+fs(x)+' ke persamaan awal.'+(benar?' Ruas kiri sama dengan ruas kanan, jadi jawabannya benar.':''),
+    baris:[sub+' = '+fs(kiri),fs(kiri)+' = '+num(c)+(benar?'  ✓':'')]});
+  return{pers:pers,langkah:langkah,x:x,benar:benar};
+}
+
+(function(){
+  const $=id=>document.getElementById(id);
+  const inA=$('inA'),inV=$('inV'),inOp=$('inOp'),inB=$('inB'),inC=$('inC');
+  const out=$('outSolusi'),prev=$('pratinjau'),pesan=$('pesan'),hasil=$('hasil'),bulat=/^-?\d+$/;
+  function resetHasil(){hasil.hidden=true;hasil.innerHTML='';out.textContent='?';out.classList.remove('terisi');}
+  function pratinjau(){
+    const v=/^[A-Za-z]$/.test(inV.value.trim())?inV.value.trim():'?';
+    const tampil=s=>(bulat.test(s.trim())?num(parseInt(s.trim(),10)):'?');
+    prev.innerHTML='<span class="p1">'+tampil(inA.value)+'</span><span class="p2">'+v+'</span><span class="p3">'+inOp.value+'</span><span class="p4">'+tampil(inB.value)+'</span><span class="p5">=</span><span class="p6">'+tampil(inC.value)+'</span>';
+  }
+  function gagal(t){pesan.textContent=t;pesan.hidden=false;resetHasil();}
+  $('solverForm').addEventListener('submit',function(e){
+    e.preventDefault();pesan.hidden=true;
+    const v=inV.value.trim(),sa=inA.value.trim(),sb=inB.value.trim(),sc=inC.value.trim();
+    if(!/^[A-Za-z]$/.test(v))return gagal('Isi kolom variabel dengan satu huruf, misalnya x.');
+    if(!bulat.test(sa)||!bulat.test(sb)||!bulat.test(sc))return gagal('Isi kolom koefisien, konstanta, dan hasil dengan bilangan bulat.');
+    const a=parseInt(sa,10),b=parseInt(sb,10),c=parseInt(sc,10);
+    if(Math.max(Math.abs(a),Math.abs(b),Math.abs(c))>1000000)return gagal('Gunakan bilangan yang tidak lebih dari 1.000.000.');
+    if(a===0)return gagal('Koefisien tidak boleh 0. Kalau a = 0, variabel hilang dan persamaannya bukan PLSV lagi.');
+    if(b<0)return gagal('Isi konstanta dengan bilangan 0 atau lebih. Tanda + atau − dipilih di kolom tanda operasi.');
+    const r=selesaikan(a,b,inOp.value==='+',c,v),solusi=v+' = '+fs(r.x);
+    out.textContent=solusi;out.classList.add('terisi');
+    hasil.innerHTML='<h4>Langkah penyelesaian: <span class="rumus">'+r.pers+'</span></h4><ol class="steps">'+
+      r.langkah.map(function(l){return '<li><h5>'+l.judul+'</h5><p>'+l.teks+'</p>'+l.baris.map(function(x){return '<div class="baris">'+x+'</div>';}).join('')+'</li>';}).join('')+
+      '</ol><div class="solusi-box"><span>Solusi</span><strong>'+solusi+'</strong><small>Himpunan penyelesaian: {'+fs(r.x)+'}'+desimal(r.x)+'</small></div>';
+    hasil.hidden=false;hasil.scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+  [inA,inV,inOp,inB,inC].forEach(function(el){['input','change'].forEach(function(ev){el.addEventListener(ev,function(){pesan.hidden=true;resetHasil();pratinjau();});});});
+  $('btnContoh').onclick=function(){inA.value='2';inV.value='x';inOp.value='+';inB.value='5';inC.value='7';pesan.hidden=true;resetHasil();pratinjau();};
+  $('btnHapus').onclick=function(){inA.value='';inV.value='x';inOp.value='+';inB.value='';inC.value='';pesan.hidden=true;resetHasil();pratinjau();};
+  pratinjau();
+})();
+</script>
+</body>
+</html>

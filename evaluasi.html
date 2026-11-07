@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLSV | Latihan Soal</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Urbanist','Segoe UI',sans-serif;}
+body{
+    height:100vh; overflow:hidden; color:#1e2937;
+    background:linear-gradient(rgba(255,255,255,.93),rgba(240,249,255,.93)),url('assets/images/bgkubika4.png');
+    background-size:cover; background-position:center; background-repeat:no-repeat; background-color:#f0f9ff;
+}
+.container{width:95%;max-width:1200px;height:95vh;margin:auto;padding:15px 0;display:flex;gap:15px;}
+
+.sidebar{width:250px;background:#fff;border-radius:18px;border:1px solid #e2e8f0;box-shadow:0 6px 20px rgba(15,23,42,.06);padding:15px;overflow:auto;}
+.sidebar-header{background:#7dd3fc;color:#0c4a6e;text-align:center;padding:12px;border-radius:12px;font-weight:700;margin-bottom:15px;}
+.stats{display:flex;justify-content:space-between;margin-bottom:15px;}
+.stat{text-align:center;}
+.stat-number{font-size:22px;font-weight:700;color:#0369a1;}
+.stat-label{font-size:12px;color:#64748b;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.num{height:50px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;font-weight:600;transition:.3s;}
+.num:hover{background:#f0f9ff;border-color:#38bdf8;}
+.num.active{background:#7dd3fc;color:#0c4a6e;border-color:#38bdf8;}
+.num.done{background:#14b8a6;color:#fff;border-color:#14b8a6;}
+
+.main{flex:1;background:#fff;border-radius:18px;border:1px solid #e2e8f0;box-shadow:0 6px 20px rgba(15,23,42,.06);padding:20px;display:flex;flex-direction:column;overflow:auto;}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;gap:10px;flex-wrap:wrap;}
+.badge{background:#f8fafc;border:1px solid #e2e8f0;padding:8px 15px;border-radius:25px;font-size:14px;}
+.dashboard-btn{text-decoration:none;background:#7dd3fc;color:#0c4a6e;padding:8px 15px;border-radius:25px;font-size:14px;font-weight:600;transition:.3s;}
+.dashboard-btn:hover{background:#38bdf8;transform:translateY(-2px);}
+
+.progress{height:8px;background:#f1f5f9;border-radius:50px;overflow:hidden;margin-bottom:16px;}
+.progress-bar{width:10%;height:100%;background:#7dd3fc;transition:.4s;}
+
+.question{font-size:20px;font-weight:600;margin-bottom:16px;line-height:1.55;}
+.btn{width:100%;padding:12px 15px;margin-bottom:8px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;color:#1e2937;text-align:left;font-size:15px;cursor:pointer;transition:.3s;}
+.btn:hover{background:#f0f9ff;border-color:#38bdf8;}
+.btn.selected{background:#7dd3fc;border-color:#38bdf8;color:#0c4a6e;font-weight:700;}
+.btn:focus-visible,.back:focus-visible,.next:focus-visible{outline:3px solid #0369a1;outline-offset:2px;}
+
+.footer{margin-top:auto;padding-top:14px;display:flex;justify-content:space-between;}
+.back{padding:10px 20px;border:1px solid #e2e8f0;border-radius:25px;background:#fff;color:#64748b;cursor:pointer;font:inherit;}
+.back:hover{border-color:#38bdf8;color:#0369a1;}
+.next{padding:10px 20px;border:none;border-radius:25px;background:#7dd3fc;color:#0c4a6e;cursor:pointer;font:inherit;font-weight:600;}
+.next:hover{background:#38bdf8;}
+
+/* Hasil */
+.skor-besar{font-size:44px;font-weight:800;color:#0369a1;}
+.review{border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-bottom:10px;background:#f8fafc;}
+.review.benar{border-left:5px solid #14b8a6;}
+.review.salah{border-left:5px solid #ef4444;}
+.review p{line-height:1.55;margin-top:6px;}
+
+/* Penjelasan jawaban */
+.review details{margin-top:10px}
+.review summary{cursor:pointer;font-weight:700;color:#0369a1}
+.jelas{margin-top:10px;padding:12px 14px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;font-size:15px}
+.jelas p{margin:0 0 8px}
+.jelas p.ok{color:#0f766e}
+.jelas p.no{color:#b91c1c}
+.jelas ol{margin:0 0 10px 20px;line-height:1.6}
+.jelas p.kunci{margin:0;padding:8px 12px;background:#ecfdf5;border-radius:8px;color:#065f46}
+
+@media(max-width:900px){
+    body{overflow:auto;height:auto;}
+    .container{flex-direction:column;height:auto;}
+    .sidebar{width:100%;}
+    .main{overflow:visible;}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="sidebar">
+        <div class="sidebar-header">📋 Daftar Soal</div>
+        <div class="stats">
+            <div class="stat"><div class="stat-number" id="selesai">0</div><div class="stat-label">Terjawab</div></div>
+            <div class="stat"><div class="stat-number" id="pengerjaan">1</div><div class="stat-label">Pengerjaan</div></div>
+            <div class="stat"><div class="stat-number">10</div><div class="stat-label">Total</div></div>
+        </div>
+        <div class="grid" id="grid"></div>
+    </div>
+
+    <div class="main" id="main">
+        <div class="topbar">
+            <div style="display:flex;gap:10px;align-items:center;">
+                <a href="index.html" class="dashboard-btn">Kembali</a>
+            </div>
+            <div class="badge" id="badge">Soal 1/10</div>
+        </div>
+
+        <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="question" id="q">Memuat...</div>
+        <div id="opsi"></div>
+
+        <div class="footer">
+            <button class="back" onclick="prev()">← Sebelumnya</button>
+            <button class="next" id="btnNext" onclick="next()">Lanjut →</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ===== BANK 300 SOAL PLSV =====
+   Format tiap baris:  JENIS | isi | A | B | C | D | KUNCI
+   P = "Penyelesaian dari persamaan <isi> adalah ..."
+   N = "Nilai x yang memenuhi persamaan <isi> adalah ..."
+   T = isi adalah kalimat soal lengkap                            */
+const RAW = `
+T|Manakah yang merupakan persamaan linear satu variabel?|2x + y = 5|3x + 4 > 10|2x + 3 = 7|x² + 2 = 6|C
+T|Kalimat terbuka yang dihubungkan dengan tanda sama dengan (=) disebut ...|pertidaksamaan|kalimat tertutup|ekspresi aljabar|persamaan|D
+T|Koefisien x pada persamaan 5x − 7 = 18 adalah ...|−7|5|18|7|B
+T|Konstanta pada ruas kiri persamaan 4x + 9 = 25 adalah ...|4|25|13|9|D
+T|Variabel pada persamaan 3p + 8 = 20 adalah ...|8|20|3|p|D
+T|Dua persamaan dikatakan ekuivalen apabila keduanya ...|mempunyai himpunan penyelesaian yang sama|mempunyai variabel yang berbeda|mempunyai bentuk yang sama persis|mempunyai koefisien yang sama|A
+T|Agar persamaan tetap ekuivalen, operasi yang boleh dilakukan adalah ...|mengalikan kedua ruas dengan nol|mengalikan kedua ruas dengan bilangan yang sama dan tidak nol|menambah ruas kiri saja dengan bilangan tertentu|mengurangi ruas kanan saja dengan bilangan tertentu|B
+T|Pangkat tertinggi variabel pada persamaan linear satu variabel adalah ...|3|0|1|2|C
+T|Banyaknya variabel pada persamaan linear satu variabel adalah ...|tidak ada|dua|satu|tiga|C
+T|Bentuk umum persamaan linear satu variabel adalah ...|ax + by = c dengan a ≠ 0|ax + b = 0 dengan a = 0|ax + b = 0 dengan a ≠ 0|ax² + bx + c = 0 dengan a ≠ 0|C
+T|Persamaan yang ekuivalen dengan 2x + 6 = 14 adalah ...|x + 6 = 7|x + 3 = 7|x + 3 = 14|2x = 20|B
+T|Jika bilangan 5 dipindahkan dari ruas kiri ke ruas kanan pada persamaan x + 5 = 12, maka bentuknya menjadi ...|x = 5 − 12|x = 12 + 5|x = 12 − 5|x = −12 − 5|C
+T|Persamaan 3x − 4 = 11 dapat diubah menjadi ...|3x = 11 + 4|3x = 4 − 11|x = 11 + 4|3x = 11 − 4|A
+T|Kalimat "Lima lebih dari suatu bilangan sama dengan 12", jika bilangan itu dimisalkan x, dapat dimodelkan menjadi ...|x − 5 = 12|5x = 12|5 − x = 12|x + 5 = 12|D
+T|Kalimat "Dua kali suatu bilangan dikurangi 3 sama dengan 9" dapat dimodelkan menjadi ...|2x − 3 = 9|3 − 2x = 9|2(x − 3) = 9|2x + 3 = 9|A
+T|Kalimat "Tiga kali jumlah suatu bilangan dan 4 adalah 18" dapat dimodelkan menjadi ...|x + 12 = 18|3x + 4 = 18|3(x + 4) = 18|3 + (x + 4) = 18|C
+T|Kalimat "Setengah dari suatu bilangan ditambah 2 sama dengan 7" dapat dimodelkan menjadi ...|2x + 2 = 7|x/2 − 2 = 7|x/2 + 2 = 7|(x + 2)/2 = 7|C
+T|Manakah yang bukan persamaan linear satu variabel?|x/3 = 4|3x + 2y = 6|5 = x + 1|2x − 1 = 5|B
+T|Manakah yang merupakan kalimat terbuka?|x + 3 = 8|7 − 2 = 5|5 + 3 = 8|2 lebih besar daripada 3|A
+T|Persamaan yang penyelesaiannya x = 0 adalah ...|2x + 5 = 0|2x + 5 = 5|3x − 3 = 0|x + 1 = 0|B
+T|Langkah pertama yang tepat untuk menyelesaikan x/2 + x/3 = 5 adalah ...|mengalikan kedua ruas dengan 6|mengurangkan x pada kedua ruas|mengalikan kedua ruas dengan 5|menjumlahkan penyebut 2 dan 3|A
+T|Pada persamaan 2x + 3 = 11, bilangan pengganti x dari {1, 2, 3, 4, 5} yang membuat persamaan bernilai benar adalah ...|3|4|5|1|B
+T|Penyelesaian dari persamaan linear satu variabel disebut juga ...|konstanta|koefisien|akar persamaan|variabel|C
+T|Himpunan penyelesaian dari 2x = 10 dengan x bilangan asli adalah ...|{−5}|{5}|{10}|{20}|B
+T|Jika kedua ruas persamaan 4x = 20 dibagi 4, maka diperoleh ...|x = 24|x = 5|x = 16|x = 80|B
+N|15 + x = 12|−2|3|−3|27|C
+P|x − 1 = 11|−12|10|12|13|C
+N|13 + x = 17|−4|4|30|5|B
+N|3 + x = −6|−9|−3|−8|9|A
+P|x − 12 = 13|1|−25|25|26|C
+N|16 + x = 40|25|−24|24|56|C
+P|x + 4 = 27|23|31|−23|24|A
+N|−x + 4 = 6|−10|10|2|−2|D
+P|x − 2 = −10|−8|8|−12|−7|A
+N|−x + 19 = 7|−12|26|−26|12|D
+P|x − 6 = −2|5|−4|−8|4|D
+P|x − 2 = −4|−6|−1|2|−2|D
+P|x + 5 = 9|14|5|4|−4|C
+P|x + 13 = 25|38|−12|12|13|C
+P|10 − x = 20|30|10|−10|−30|C
+N|23 + x = 30|−7|7|53|8|B
+N|−x + 4 = 8|−4|−12|4|12|A
+P|12 − x = 25|−37|13|−13|37|C
+P|x − 13 = −10|−3|−23|4|3|D
+N|2 + x = −6|8|−7|−4|−8|D
+N|−x + 24 = 1|−23|25|23|−25|C
+P|21 − x = −7|−14|−28|28|14|C
+P|x − 9 = −5|4|−14|−4|5|A
+P|x − 3 = 19|22|23|16|−22|A
+P|14 − x = 24|−10|−38|10|38|A
+P|x + 13 = 6|−6|19|7|−7|D
+P|x − 4 = −9|−4|−13|5|−5|D
+N|−x + 15 = 5|−20|20|10|−10|C
+P|x + 3 = 4|2|−1|1|7|C
+P|7 − x = −1|−6|6|8|−8|C
+N|x/3 = 2|6|−6|5|−1|A
+P|−12x = 108|−1296|120|9|−9|D
+P|8x = −3|−3/8|3/8|−1/2|−8/3|A
+P|2x = −19|−19/3|−2/19|−19/2|19/2|C
+P|3x = 3|−1|1|9|6|B
+N|x/7 = 1|8|−6|−7|7|D
+P|−9x = −54|−6|486|−63|6|D
+P|2x = −17|−17/2|−2/17|17/2|−17/3|A
+N|x/7 = 7|1|14|49|−49|C
+P|5x = −14|−7/3|14/5|−13/5|−14/5|D
+P|6x = 19|19/6|19/7|−19/6|6/19|A
+P|−5x = −10|−15|2|50|−2|B
+P|−11x = −99|1089|−9|−88|9|D
+P|−6x = −48|8|−8|−54|288|A
+P|−4x = 8|4|12|2|−2|D
+N|x/6 = 12|72|−72|6|18|A
+P|−8x = −4|5/8|−1/2|1/2|3/8|C
+P|9x = −81|9|−9|−90|−72|B
+N|x/2 = −3|−6|6|−1|−5|A
+N|x/2 = 10|−20|20|12|8|B
+P|−4x = −10|−5/2|9/4|5/2|11/4|C
+N|x/6 = 6|0|−36|1|36|D
+P|2x = −4|−2|−6|2|−8|A
+P|8x = −11|−11/8|−5/4|11/8|−8/11|A
+P|6x = 30|24|−5|5|180|C
+P|8x = −40|−320|5|−32|−5|D
+P|−6x = 17|−17/5|−17/6|17/6|−8/3|B
+P|−2x = −3|5/2|2/3|−3/2|3/2|D
+P|−4x = −4|1|16|−1|0|A
+N|x/3 = −6|−18|18|−3|−9|A
+P|−3x − 13 = 8|24|7|−7|−63|C
+P|−3x − 7 = 5|−36|−4|4|15|B
+P|−4x − 6 = −30|−6|6|−20|9|B
+P|7x + 10 = 52|−6|6|35|294|B
+P|4x + 15 = 51|9|−9|32|144|A
+P|7x + 12 = −2|−21|−2|2|−98|B
+P|4x − 10 = 2|48|3|8|−3|B
+P|9x − 9 = −36|−243|5|−3|−5|C
+P|3x + 12 = 45|11|30|19|99|A
+P|−4x − 5 = 7|3|−3|16|−48|B
+P|7x − 8 = 69|−11|70|11|539|C
+P|9x + 5 = 68|7|567|−7|54|A
+P|9x + 10 = 19|0|−1|1|81|C
+P|8x + 3 = 43|−5|320|5|32|C
+P|6x + 14 = 38|−4|18|144|4|D
+P|−2x − 10 = 4|−28|16|−7|3|C
+P|6x + 6 = 66|5|−10|10|12|C
+P|−2x − 15 = −27|6|−6|−10|21|A
+P|−4x + 10 = 46|−144|9|−14|−9|D
+P|8x + 4 = 20|3|128|2|8|C
+P|3x + 3 = −15|−8|−21|−6|6|C
+P|4x + 3 = 43|10|−10|36|160|A
+P|4x + 9 = −3|−3|−16|−48|3|A
+P|3x + 6 = 27|11|7|3|−7|B
+P|−3x + 1 = −8|27|−3|3|−6|C
+P|−2x + 6 = 20|−16|−7|−13|7|B
+P|6x + 1 = 67|396|11|60|−11|B
+P|8x + 7 = −41|−56|−6|6|−384|B
+P|7x − 5 = 16|14|−3|3|147|C
+P|−5x − 8 = −18|50|−2|2|−5|C
+P|9x − 14 = −86|8|−81|−648|−8|D
+P|−4x − 9 = −29|5|−5|80|−16|A
+P|3x + 6 = −9|−18|−1|−9|−5|D
+P|3x + 6 = 42|33|16|12|8|C
+P|−4x + 14 = 18|−8|1|−1|8|C
+P|−3x − 14 = −38|−8|72|−21|8|D
+P|−4x − 4 = −20|6|9|4|64|C
+P|7x − 3 = 74|539|70|−11|11|D
+P|−3x + 11 = −19|10|−10|90|−27|A
+P|2x − 4 = −2|−1|−3|4|1|D
+P|4x + 3 = 5x + 5|−8|−1|2|−2|D
+P|9x − 10 = 5x + 22|−8|3|8|9|C
+P|6x + 5 = 4x + 7|2|1|6|−1|B
+P|2x − 11 = −x + 19|−10|8|30|10|D
+P|4x − 9 = 3x − 6|4|−3|−15|3|D
+P|9x + 7 = 4x + 12|1|−1|2|0|A
+P|6x − 10 = −x + 39|−7|7|8|6|B
+P|8x + 6 = −2x − 74|−7|8|−9|−8|D
+P|5x + 2 = 2x − 19|7|−3|−6|−7|D
+P|5x − 7 = x + 9|5|4|−4|3|B
+P|3x − 6 = x − 4|2|−1|1|−5|C
+P|6x − 3 = −2x − 59|7|−6|−7|−14|C
+P|4x − 11 = 6x − 13|−1|12|2|1|D
+P|2x + 2 = 5x + 14|−3|−4|−5|4|B
+P|3x + 7 = 5x + 1|−3|3|1|−4|B
+P|9x + 1 = 2x + 15|1|2|3|−2|B
+P|6x + 9 = 4x + 13|−2|2|11|3|B
+P|3x + 10 = −2x + 35|−5|25|5|9|C
+P|9x − 1 = −x + 49|−5|6|4|5|D
+P|5x + 1 = 4x − 7|8|−6|−7|−8|D
+P|2x + 4 = −2x + 40|9|−9|11|10|A
+P|8x + 11 = 2x − 31|−7|−6|7|−2|A
+P|7x − 5 = x + 37|7|4|−7|8|A
+P|4x − 5 = 3x − 6|−1|−11|0|1|A
+P|9x + 4 = 2x − 52|−9|8|−7|−8|D
+P|7x + 10 = −3x − 20|−2|−3|3|−1|B
+P|5x − 3 = −x + 45|12|7|8|−8|C
+P|9x + 10 = 5x − 6|1|4|−3|−4|D
+P|3x − 8 = x + 4|−2|−1|6|−6|C
+P|8x − 10 = 4x + 38|−12|12|7|4|B
+P|7x − 6 = 5x + 4|−5|5|−1|6|B
+P|2x + 1 = −2x + 9|2|3|−2|1|A
+P|5x + 6 = −x − 42|−12|8|−8|−6|C
+P|9x + 1 = x + 89|12|11|9|−11|B
+P|6x − 6 = 5x − 1|6|−7|−5|5|D
+P|2x − 4 = −x − 19|5|−5|−23|−15|B
+P|2x − 1 = 4x + 9|−4|5|−5|−6|C
+P|9x − 6 = x − 30|3|−4|−2|−3|D
+P|9x + 4 = x + 20|2|1|3|−2|A
+P|7x + 3 = x − 27|−3|5|−4|−5|D
+P|7(x + 1) = 3x + 39|8|−8|9|7|A
+P|3(x + 1) = x − 7|5|−2|−4|−5|D
+P|6(x + 5) = 5x + 28|−2|23|2|58|A
+P|7(x − 3) − 5(x + 1) = −38|6|−6|−32|−11|B
+P|8(x − 3) = 24|−6|19|0|6|D
+P|6(x + 2) = 5x + 5|−7|7|17|3|A
+P|3(x + 3) − 1(x − 6) = 19|2|8|17|−2|A
+P|3(x − 3) − 1(x − 5) = −10|2|−7|−3|3|C
+P|6(x − 5) = −36|−1|1|−37|−11|A
+N|5(x + 6) − 1 = 14|−2|3|9|−3|D
+P|6(x + 4) = 2x + 72|17|−12|12|24|C
+P|3(x + 4) − 1(x − 7) = 21|1|8|20|−1|A
+P|8(x − 2) = 2x − 10|−1|0|1|2|C
+N|5(x + 7) − 8 = 62|8|21|7|−7|C
+P|5(x − 7) = −70|−68|7|−7|−21|C
+P|6(x + 3) = 42|10|4|33|−4|B
+P|3(x − 9) = −48|−25|−7|7|−42|B
+P|4(x − 6) = −36|−3|−15|−34|3|A
+P|6(x + 2) = 4x + 10|4|−1|11|1|B
+P|2(x + 7) − 1(x − 5) = 24|5|43|15|−5|A
+P|6(x − 3) = 54|6|12|51|−12|B
+N|2(x + 7) + 10 = 44|−10|10|20|24|B
+N|3(x − 3) − 8 = −8|3|4|1|−3|A
+P|6(x + 6) − 1(x + 1) = 0|−7|−6|−5|7|A
+P|6(x + 2) − 4(x − 2) = 30|1|5|13|−5|B
+P|4(x + 5) = 44|35|16|6|−6|C
+P|6(x − 6) − 5(x + 4) = −46|−10|−30|−102|10|D
+N|4(x − 8) + 10 = −38|−4|−10|4|1|A
+P|6(x + 5) = 4x + 46|−8|38|9|8|D
+N|4(x − 5) + 2 = −30|3|−3|−13|−2|B
+N|(x − 5)/5 = 2|5|15|35|7|B
+P|(5x − 5)/2 = −5|0|−1|−2|−3|B
+N|(x + 8)/4 = 4|8|24|−4|−8|A
+P|x/3 + 7 = 1|−18|24|18|−3|A
+N|(x + 5)/2 = 6|7|2|−7|1|A
+P|x/3 + x/6 = 9|81|18|162|54|B
+P|x/3 + 6 = 15|−27|27|12|9|B
+P|x/2 − 4 = −5|−18|−2|1|−1|B
+P|(5x + 6)/3 = 12|8|5|6|7|C
+N|2x/5 = 8|4|−20|40|20|D
+N|(x − 5)/5 = 6|−35|11|55|35|D
+N|2x/3 = 12|−18|36|8|18|D
+P|x/4 + x/6 = 10|24|120|100|240|A
+P|(5x + 10)/5 = 10|0|4|10|8|D
+N|(x − 2)/6 = 6|38|8|48|34|A
+N|6x/4 = 24|16|−16|36|4|A
+P|x/5 + 1 = 4|8|−15|3|15|D
+P|x/2 + x/5 = 21|147|210|30|28|C
+P|x/3 + x/5 = 32|480|40|60|256|C
+P|(2x + 1)/3 = 1|0|3|2|1|D
+P|x/2 + 7 = 15|44|16|−16|10|B
+N|(x + 9)/4 = 8|−1|−4|−23|23|D
+P|x/2 + x/3 = 10|50|60|12|15|C
+P|(3x + 2)/5 = −2|−3|−5|0|−4|D
+N|(x + 8)/4 = −2|−16|16|−40|−10|A
+P|x/3 + x/4 = 14|98|21|168|24|D
+P|x/6 + 7 = 6|6|5|−6|−1|C
+P|x/3 + 5 = 9|7|42|−12|12|D
+P|(5x − 8)/2 = 26|13|11|12|14|C
+N|3x/2 = 18|12|27|15|6|A
+T|Persamaan dengan variabel di kedua ruas yang akarnya x = −1 adalah ...|2x + 5 = 4x + 7|3x − 10 = −x − 2|8x + 7 = 4x − 9|2x + 2 = −3x + 7|A
+T|Persamaan yang mempunyai penyelesaian x = −6 adalah ...|2x + 9 = 1|3x − 4 = −22|6x + 7 = −47|3x − 4 = −28|B
+T|Persamaan yang mempunyai penyelesaian x = 10 adalah ...|3x + 7 = 31|2x − 9 = 11|6x + 4 = 76|8x + 4 = 60|B
+T|Persamaan dengan variabel di kedua ruas yang akarnya x = 5 adalah ...|7x − 7 = 2x + 8|8x + 6 = −x + 33|3x + 3 = x + 15|6x − 5 = −2x + 35|D
+T|Persamaan dengan variabel di kedua ruas yang akarnya x = 4 adalah ...|8x − 7 = 4x − 3|8x + 5 = −3x + 49|3x − 8 = −2x − 3|2x + 8 = x + 15|B
+T|Persamaan dengan variabel di kedua ruas yang akarnya x = 1 adalah ...|8x + 4 = 4x + 20|5x + 1 = x + 5|6x + 2 = 4x + 2|4x + 6 = −3x − 8|B
+T|Persamaan yang mempunyai penyelesaian x = −4 adalah ...|8x − 4 = −60|6x − 9 = −45|5x − 9 = −29|7x − 8 = −43|C
+T|Persamaan yang mempunyai penyelesaian x = 2 adalah ...|3x − 7 = 5|8x − 5 = 19|2x − 1 = −3|5x − 8 = 2|D
+T|Persamaan yang mempunyai penyelesaian x = 1 adalah ...|7x − 4 = 10|4x − 4 = 4|7x − 9 = −16|5x − 9 = −4|D
+T|Persamaan dengan variabel di kedua ruas yang akarnya x = −4 adalah ...|6x + 2 = 3x − 16|8x − 10 = −3x − 87|5x + 2 = x − 14|6x + 4 = x − 26|C
+T|Persamaan yang mempunyai penyelesaian x = 6 adalah ...|5x − 6 = 9|8x − 7 = 17|7x − 4 = 59|7x − 2 = 40|D
+T|Persamaan dengan variabel di kedua ruas yang akarnya x = 7 adalah ...|8x − 2 = 2x + 22|2x − 5 = −x + 13|2x − 4 = 3x − 8|6x + 2 = −3x + 65|D
+T|Persamaan yang mempunyai penyelesaian x = 7 adalah ...|4x + 10 = 42|7x + 7 = 35|7x − 1 = 27|5x − 1 = 34|D
+T|Persamaan yang mempunyai penyelesaian x = −2 adalah ...|2x − 2 = −2|3x + 2 = −10|6x + 10 = −20|7x − 5 = −19|D
+T|Persamaan yang mempunyai penyelesaian x = 4 adalah ...|6x + 9 = 27|8x − 6 = 42|8x − 4 = 36|3x + 10 = 22|D
+T|Persamaan yang mempunyai penyelesaian x = −1 adalah ...|7x + 5 = 5|2x + 1 = −5|2x − 1 = 1|3x + 3 = 0|D
+T|Persamaan yang mempunyai penyelesaian x = 5 adalah ...|8x + 10 = 50|6x + 3 = 15|6x + 6 = 18|5x + 4 = 39|A
+T|Persamaan yang mempunyai penyelesaian x = −5 adalah ...|7x − 7 = −49|2x + 5 = −3|8x + 4 = −20|3x − 1 = −16|D
+T|Persamaan dengan variabel di kedua ruas yang akarnya x = −3 adalah ...|7x − 5 = −2x − 5|5x + 2 = 2x − 10|3x − 3 = 4x|4x − 3 = 2x − 11|C
+T|Persamaan dengan variabel di kedua ruas yang akarnya x = 9 adalah ...|2x − 8 = x − 1|2x + 4 = −3x + 64|3x − 9 = x + 9|7x + 4 = −2x + 112|C
+T|Jika x memenuhi persamaan 4x + 9 = 29, maka nilai dari 3x − 9 adalah ...|6|−24|24|9|A
+T|Jika x memenuhi persamaan 3x − 7 = 2, maka nilai dari −3x − 1 adalah ...|4|−10|8|−8|B
+T|Jika x memenuhi persamaan 4x + 4 = 8, maka nilai dari 5x − 3 adalah ...|7|12|2|−3|C
+T|Jika x memenuhi persamaan 7x + 6 = 34, maka nilai dari 4x − 5 adalah ...|21|15|7|11|D
+T|Jika x memenuhi persamaan 5x − 9 = −29, maka nilai dari −x − 7 adalah ...|−4|−3|−11|11|B
+T|Jika x memenuhi persamaan 6x + 9 = 15, maka nilai dari 2x + 6 adalah ...|−4|8|4|14|B
+T|Jika x memenuhi persamaan 7x − 5 = 58, maka nilai dari −2x − 7 adalah ...|−23|−25|11|−11|B
+T|Jika x memenuhi persamaan 5x + 6 = 36, maka nilai dari −x + 9 adalah ...|3|2|15|−15|A
+T|Jika x memenuhi persamaan 4x + 6 = 26, maka nilai dari −2x − 3 adalah ...|7|−13|−19|−11|B
+T|Jika x memenuhi persamaan 5x + 1 = 16, maka nilai dari −3x − 7 adalah ...|−16|−13|2|−2|A
+T|Jika x memenuhi persamaan 3x − 3 = 15, maka nilai dari 2x − 4 adalah ...|−16|10|8|4|C
+T|Jika x memenuhi persamaan 4x + 1 = −7, maka nilai dari −2x − 2 adalah ...|4|1|−6|2|D
+T|Jika x memenuhi persamaan 6x − 8 = 16, maka nilai dari 3x − 7 adalah ...|2|5|−19|8|B
+T|Jika x memenuhi persamaan 5x + 2 = −8, maka nilai dari 3x + 1 adalah ...|−5|7|−8|−2|A
+T|Jika x memenuhi persamaan 6x − 1 = 23, maka nilai dari 3x − 8 adalah ...|−20|20|4|3|C
+T|Jika x memenuhi persamaan 2x + 6 = 18, maka nilai dari −3x + 8 adalah ...|−10|−28|−26|26|A
+T|Jika x memenuhi persamaan 7x − 2 = 5, maka nilai dari −3x + 3 adalah ...|3|0|−3|6|B
+T|Jika x memenuhi persamaan 2x − 2 = 12, maka nilai dari 2x + 5 adalah ...|19|17|15|−9|A
+T|Jika x memenuhi persamaan 2x + 9 = 15, maka nilai dari −2x − 9 adalah ...|−15|3|−33|−3|A
+T|Jika x memenuhi persamaan 7x − 5 = 23, maka nilai dari 3x − 5 adalah ...|4|7|−17|17|B
+T|Jarak kota P dan kota Q adalah 230 km. Sebuah bus berangkat dari kota P menuju kota Q dengan kecepatan tetap 50 km/jam. Setelah beberapa jam, sisa jarak yang belum ditempuh adalah 80 km. Lama perjalanan bus tersebut adalah ...|5 jam|3 jam|4 jam|2 jam|B
+T|Tabungan Rina saat ini Rp25.000. Setiap minggu ia menambah tabungannya sebesar Rp20.000. Setelah berapa minggu tabungan Rina menjadi Rp105.000?|5 minggu|4 minggu|3 minggu|6 minggu|B
+T|Panjang sebuah persegi panjang 5 cm lebih dari lebarnya. Jika kelilingnya 78 cm, maka lebar persegi panjang tersebut adalah ...|39 cm|34 cm|17 cm|22 cm|C
+T|Banyak kelereng Budi 9 butir lebih banyak daripada kelereng Candra. Jika jumlah kelereng keduanya 49 butir, maka banyak kelereng Candra adalah ...|20 butir|38 butir|29 butir|42 butir|A
+T|Panjang sebuah persegi panjang 7 cm lebih dari lebarnya. Jika kelilingnya 74 cm, maka lebar persegi panjang tersebut adalah ...|37 cm|30 cm|15 cm|22 cm|C
+T|4 kali suatu bilangan ditambah 9 hasilnya 17. Bilangan tersebut adalah ...|4|2|−2|3|B
+T|Banyak kelereng Budi 12 butir lebih banyak daripada kelereng Candra. Jika jumlah kelereng keduanya 60 butir, maka banyak kelereng Candra adalah ...|24 butir|36 butir|30 butir|46 butir|A
+T|Jumlah suatu bilangan dan 4 kali bilangan itu adalah 70. Bilangan tersebut adalah ...|66|15|14|56|C
+T|Tempat penyewaan A menetapkan biaya sewa sepeda motor Rp20.000 ditambah Rp9.000 untuk setiap jam. Tempat penyewaan B menetapkan biaya Rp32.000 ditambah Rp5.000 untuk setiap jam. Biaya sewa di kedua tempat akan sama setelah ... jam.|4 jam|2 jam|5 jam|3 jam|D
+T|Panjang sebuah persegi panjang 9 cm lebih dari lebarnya. Jika kelilingnya 62 cm, maka lebar persegi panjang tersebut adalah ...|22 cm|31 cm|11 cm|20 cm|C
+T|Umur seorang ayah 5 kali umur anaknya. Jika jumlah umur ayah dan anaknya 96 tahun, maka umur anak tersebut adalah ...|16 tahun|80 tahun|91 tahun|17 tahun|A
+T|Besar ketiga sudut sebuah segitiga adalah x°, (x + 16)°, dan (x + 26)°. Nilai x adalah ...|62°|72°|46°|60°|C
+T|Tabungan Rina saat ini Rp65.000. Setiap minggu ia menambah tabungannya sebesar Rp25.000. Setelah berapa minggu tabungan Rina menjadi Rp165.000?|3 minggu|4 minggu|5 minggu|6 minggu|B
+T|Banyak kelereng Budi 5 butir lebih banyak daripada kelereng Candra. Jika jumlah kelereng keduanya 39 butir, maka banyak kelereng Candra adalah ...|36 butir|32 butir|22 butir|17 butir|D
+T|Tempat penyewaan A menetapkan biaya sewa sepeda motor Rp31.000 ditambah Rp7.000 untuk setiap jam. Tempat penyewaan B menetapkan biaya Rp33.000 ditambah Rp6.000 untuk setiap jam. Biaya sewa di kedua tempat akan sama setelah ... jam.|4 jam|3 jam|2 jam|1 jam|C
+T|Umur seorang ayah 5 kali umur anaknya. Jika jumlah umur ayah dan anaknya 72 tahun, maka umur anak tersebut adalah ...|13 tahun|60 tahun|12 tahun|67 tahun|C
+T|Tabungan Rina saat ini Rp85.000. Setiap minggu ia menambah tabungannya sebesar Rp20.000. Setelah berapa minggu tabungan Rina menjadi Rp185.000?|5 minggu|7 minggu|6 minggu|4 minggu|A
+T|Jarak kota P dan kota Q adalah 200 km. Sebuah bus berangkat dari kota P menuju kota Q dengan kecepatan tetap 75 km/jam. Setelah beberapa jam, sisa jarak yang belum ditempuh adalah 50 km. Lama perjalanan bus tersebut adalah ...|2 jam|1 jam|3 jam|4 jam|A
+T|Jarak kota P dan kota Q adalah 310 km. Sebuah bus berangkat dari kota P menuju kota Q dengan kecepatan tetap 40 km/jam. Setelah beberapa jam, sisa jarak yang belum ditempuh adalah 30 km. Lama perjalanan bus tersebut adalah ...|6 jam|7 jam|8 jam|9 jam|B
+T|Umur seorang ayah 3 kali umur anaknya. Jika jumlah umur ayah dan anaknya 60 tahun, maka umur anak tersebut adalah ...|57 tahun|15 tahun|12 tahun|20 tahun|B
+T|Besar ketiga sudut sebuah segitiga adalah x°, (x + 10)°, dan (x + 14)°. Nilai x adalah ...|62°|60°|68°|52°|D
+T|Rani membawa uang Rp28.500. Ia membeli 7 buah buku tulis dengan harga yang sama dan menerima uang kembalian Rp4.000. Harga sebuah buku tulis adalah ...|Rp4.000|Rp3.500|Rp4.500|Rp3.000|B
+T|Besar ketiga sudut sebuah segitiga adalah x°, (x + 12)°, dan (x + 36)°. Nilai x adalah ...|60°|80°|56°|44°|D
+T|Rani membawa uang Rp15.000. Ia membeli 7 buah buku tulis dengan harga yang sama dan menerima uang kembalian Rp4.500. Harga sebuah buku tulis adalah ...|Rp1.500|Rp2.000|Rp1.000|Rp2.500|A
+T|Banyak kelereng Budi 7 butir lebih banyak daripada kelereng Candra. Jika jumlah kelereng keduanya 67 butir, maka banyak kelereng Candra adalah ...|30 butir|58 butir|62 butir|37 butir|A
+T|2 kali suatu bilangan dikurangi 1 hasilnya 23. Bilangan tersebut adalah ...|−12|12|11|22|B
+T|Suhu air mula-mula 33°C. Air tersebut didinginkan sehingga suhunya turun 6°C setiap menit. Setelah beberapa menit, suhu air menjadi 15°C. Lama waktu pendinginan adalah ...|3 menit|8 menit|2 menit|4 menit|A
+T|Rani membawa uang Rp23.500. Ia membeli 3 buah buku tulis dengan harga yang sama dan menerima uang kembalian Rp4.000. Harga sebuah buku tulis adalah ...|Rp7.500|Rp6.500|Rp7.000|Rp6.000|B
+T|Tempat penyewaan A menetapkan biaya sewa sepeda motor Rp35.000 ditambah Rp5.000 untuk setiap jam. Tempat penyewaan B menetapkan biaya Rp40.000 ditambah Rp4.000 untuk setiap jam. Biaya sewa di kedua tempat akan sama setelah ... jam.|4 jam|5 jam|7 jam|6 jam|B
+T|Suhu air mula-mula 35°C. Air tersebut didinginkan sehingga suhunya turun 3°C setiap menit. Setelah beberapa menit, suhu air menjadi 8°C. Lama waktu pendinginan adalah ...|8 menit|11 menit|10 menit|9 menit|D
+T|Tabungan Rina saat ini Rp70.000. Setiap minggu ia menambah tabungannya sebesar Rp5.000. Setelah berapa minggu tabungan Rina menjadi Rp105.000?|8 minggu|21 minggu|35 minggu|7 minggu|D
+T|Rani membawa uang Rp10.000. Ia membeli 6 buah buku tulis dengan harga yang sama dan menerima uang kembalian Rp4.000. Harga sebuah buku tulis adalah ...|Rp1.000|Rp1.500|Rp500|Rp2.000|A
+T|Umur seorang ayah 2 kali umur anaknya. Jika jumlah umur ayah dan anaknya 36 tahun, maka umur anak tersebut adalah ...|18 tahun|12 tahun|34 tahun|9 tahun|B
+T|Suhu air mula-mula 24°C. Air tersebut didinginkan sehingga suhunya turun 2°C setiap menit. Setelah beberapa menit, suhu air menjadi 18°C. Lama waktu pendinginan adalah ...|21 menit|12 menit|4 menit|3 menit|D
+T|Panjang sebuah persegi panjang 8 cm lebih dari lebarnya. Jika kelilingnya 60 cm, maka lebar persegi panjang tersebut adalah ...|19 cm|11 cm|30 cm|22 cm|B
+`;
+
+const BANK = RAW.trim().split('\n').map(line => {
+    const p = line.split('|');
+    const jenis = p[0];
+    let q = p[1];
+    if (jenis === 'P') q = 'Penyelesaian dari persamaan ' + p[1] + ' adalah ...';
+    if (jenis === 'N') q = 'Nilai x yang memenuhi persamaan ' + p[1] + ' adalah ...';
+    return { q: q, opsi: p.slice(2, 6), kunci: 'ABCD'.indexOf(p[6]) };
+});
+
+/* ===== PENGACAKAN =====
+   - 10 soal diambil acak dari 300 soal setiap halaman dibuka.
+   - Soal yang sudah pernah muncul untuk siswa yang sama (di perangkat ini)
+     tidak dipilih lagi sampai seluruh bank habis terpakai, lalu diulang dari awal.
+   - Urutan pilihan jawaban juga diacak. */
+const JUMLAH = 10;
+
+function randInt(n){
+    if (window.crypto && crypto.getRandomValues) {
+        const a = new Uint32Array(1);
+        crypto.getRandomValues(a);
+        return a[0] % n;
+    }
+    return Math.floor(Math.random() * n);
+}
+function acak(arr){
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = randInt(i + 1);
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function kunciSeen(){
+    let nama = '';
+    try { nama = (localStorage.getItem('userName') || '').trim().toLowerCase(); } catch(e){}
+    return 'plsv_seen_' + nama;
+}
+function bacaSeen(){
+    try { return JSON.parse(localStorage.getItem(kunciSeen()) || '[]'); } catch(e){ return []; }
+}
+function simpanSeen(arr){
+    try { localStorage.setItem(kunciSeen(), JSON.stringify(arr)); } catch(e){}
+}
+
+function pilihSoal(){
+    let seen = bacaSeen().filter(i => Number.isInteger(i) && i >= 0 && i < BANK.length);
+    let sisa = [];
+    for (let i = 0; i < BANK.length; i++) if (seen.indexOf(i) === -1) sisa.push(i);
+    if (sisa.length < JUMLAH) { seen = []; sisa = BANK.map((_, i) => i); }
+    const terpilih = acak(sisa).slice(0, JUMLAH);
+    simpanSeen(seen.concat(terpilih));
+    return terpilih;
+}
+
+function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ===== PENJELASAN JAWABAN ===== */
+const MIN = '−';
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+const Fr = (n, d) => { d = d === undefined ? 1 : d; if (d < 0) { n = -n; d = -d; } const g = gcd(n, d) || 1; return [n / g, d / g]; };
+const fAdd = (x, y) => Fr(x[0] * y[1] + y[0] * x[1], x[1] * y[1]);
+const fMul = (x, y) => Fr(x[0] * y[0], x[1] * y[1]);
+const fDiv = (x, y) => Fr(x[0] * y[1], x[1] * y[0]);
+const fStr = f => (f[0] < 0 ? MIN : '') + Math.abs(f[0]) + (f[1] === 1 ? '' : '/' + f[1]);
+const nm = n => (n < 0 ? MIN : '') + Math.abs(n);
+const rp = n => 'Rp' + n.toLocaleString('id-ID');
+const ev = (p, x) => fAdd(fMul(p.a, x), p.b);
+const tx = c => (Math.abs(c) === 1 ? '' : Math.abs(c)) + 'x';
+function sd(a, b) {
+    let s = a ? (a < 0 ? MIN : '') + tx(a) : '';
+    if (b) s += s ? (b < 0 ? ' − ' : ' + ') + Math.abs(b) : nm(b);
+    return s || '0';
+}
+
+/* Pembaca ekspresi linear dalam x (mendukung kurung dan pecahan) */
+function ps(s) {
+    s = s.replace(/−/g, '-').replace(/×/g, '*').replace(/\s+/g, '');
+    let i = 0;
+    const Z = [0, 1];
+    const P = (a, b) => ({ a: a, b: b });
+    const add = (p, q) => P(fAdd(p.a, q.a), fAdd(p.b, q.b));
+    const neg = p => P(fMul(p.a, [-1, 1]), fMul(p.b, [-1, 1]));
+    const mul = (p, q) => p.a[0] ? P(fMul(p.a, q.b), fMul(p.b, q.b)) : P(fMul(q.a, p.b), fMul(q.b, p.b));
+    const div = (p, q) => P(fDiv(p.a, q.b), fDiv(p.b, q.b));
+    function ex() { let r = te(); while (s[i] === '+' || s[i] === '-') { const o = s[i++]; const t = te(); r = add(r, o === '-' ? neg(t) : t); } return r; }
+    function te() {
+        let r = fa();
+        for (;;) {
+            const c = s[i];
+            if (c === '*') { i++; r = mul(r, fa()); }
+            else if (c === '/') { i++; r = div(r, fa()); }
+            else if (c === 'x' || c === '(') { r = mul(r, fa()); }
+            else break;
+        }
+        return r;
+    }
+    function fa() {
+        const c = s[i];
+        if (c === '-') { i++; return neg(fa()); }
+        if (c === '(') { i++; const r = ex(); i++; return r; }
+        if (c === 'x') { i++; return P([1, 1], Z); }
+        const m = /^\d+/.exec(s.slice(i)); i += m[0].length;
+        return P(Z, [+m[0], 1]);
+    }
+    return ex();
+}
+
+/* Langkah penyelesaian satu persamaan */
+function langkahPers(str) {
+    const lr = str.split('=').map(ps), l = lr[0], r = lr[1];
+    let m = 1;
+    [l.a, l.b, r.a, r.b].forEach(f => { m = m * f[1] / gcd(m, f[1]); });
+    const v = [l.a, l.b, r.a, r.b].map(f => fMul(f, [m, 1])[0]);
+    const a1 = v[0], b1 = v[1], a2 = v[2], b2 = v[3];
+    const L = [];
+    const bentuk = sd(a1, b1) + ' = ' + sd(a2, b2);
+    if (m > 1) L.push('Hilangkan pecahan: kalikan kedua ruas dengan ' + m + ' sehingga ' + bentuk + '.');
+    else if (str.replace(/\s/g, '') !== bentuk.replace(/\s/g, '')) L.push('Tulis ulang dan sederhanakan kedua ruas (buka kurung kalau ada): ' + bentuk + '.');
+    const A = a1 - a2, B = b2 - b1;
+    if (A === 0) { L.push('Suku x habis, jadi persamaan ini tidak punya satu penyelesaian.'); return { L: L, x: null }; }
+    if (a2 !== 0 || b1 !== 0) {
+        L.push('Kumpulkan suku x di ruas kiri dan angka di ruas kanan: ' +
+            sd(a1, 0) + (a2 ? (a2 > 0 ? ' − ' : ' + ') + tx(a2) : '') + ' = ' +
+            nm(b2) + (b1 ? (b1 > 0 ? ' − ' : ' + ') + Math.abs(b1) : '') +
+            ', yaitu ' + sd(A, 0) + ' = ' + nm(B) + '.');
+    }
+    const x = Fr(B, A);
+    if (A !== 1) L.push('Bagi kedua ruas dengan ' + nm(A) + ': x = ' + fStr(x) + '.');
+    else L.push('Jadi x = ' + fStr(x) + '.');
+    L.push('Periksa: untuk x = ' + fStr(x) + ', ruas kiri = ' + fStr(ev(l, x)) + ' dan ruas kanan = ' + fStr(ev(r, x)) + ' (sama).');
+    return { L: L, x: x };
+}
+
+function optF(t) {
+    const m = /^(−|-)?(\d+)(?:\/(\d+))?$/.exec(t.trim());
+    return m ? Fr((m[1] ? -1 : 1) * +m[2], m[3] ? +m[3] : 1) : null;
+}
+
+function langkahSubst(d, k) {
+    return d.opsi.map((o, i) => {
+        const lr = o.split('=').map(ps);
+        const vl = ev(lr[0], k), vr = ev(lr[1], k);
+        const sama = vl[0] === vr[0] && vl[1] === vr[1];
+        return 'ABCD'[i] + '. ' + o + ' → ruas kiri = ' + fStr(vl) + ', ruas kanan = ' + fStr(vr) + (sama ? ' (sama, benar) ✓' : ' (tidak sama) ✗');
+    });
+}
+
+/* Soal cerita: mengenali pola lalu menyusun penjelasannya */
+function cerita(q) {
+    const s = q.replace(/(\d)\.(\d{3})/g, '$1$2');
+    let m;
+    if ((m = s.match(/Jarak kota P dan kota Q adalah (\d+) km.*?(\d+) km\/jam.*?adalah (\d+) km/))) {
+        const D = +m[1], v = +m[2], S = +m[3], t = (D - S) / v;
+        return ['Misalkan lama perjalanan = x jam.', 'Jarak yang sudah ditempuh = ' + D + ' − ' + S + ' = ' + (D - S) + ' km.', 'Model: ' + v + 'x = ' + (D - S) + '.', 'x = ' + (D - S) + ' ÷ ' + v + ' = ' + t + '. Jadi lama perjalanan ' + t + ' jam.'];
+    }
+    if ((m = s.match(/Tabungan Rina saat ini Rp(\d+)\. Setiap minggu ia menambah tabungannya sebesar Rp(\d+)\..*?menjadi Rp(\d+)/))) {
+        const S = +m[1], A = +m[2], T = +m[3], x = (T - S) / A;
+        return ['Misalkan lama menabung = x minggu.', 'Model: ' + rp(S) + ' + ' + rp(A) + 'x = ' + rp(T) + '.', rp(A) + 'x = ' + rp(T) + ' − ' + rp(S) + ' = ' + rp(T - S) + '.', 'x = ' + rp(T - S) + ' ÷ ' + rp(A) + ' = ' + x + '. Jadi ' + x + ' minggu.'];
+    }
+    if ((m = s.match(/Panjang sebuah persegi panjang (\d+) cm lebih dari lebarnya\. Jika kelilingnya (\d+) cm/))) {
+        const d = +m[1], K = +m[2], x = (K - 2 * d) / 4;
+        return ['Misalkan lebar = x cm, maka panjang = (x + ' + d + ') cm.', 'Keliling = 2 × (panjang + lebar), jadi 2(x + ' + d + ' + x) = ' + K + '.', '4x + ' + (2 * d) + ' = ' + K + ', sehingga 4x = ' + (K - 2 * d) + '.', 'x = ' + (K - 2 * d) + ' ÷ 4 = ' + x + '. Jadi lebarnya ' + x + ' cm.'];
+    }
+    if ((m = s.match(/Budi (\d+) butir lebih banyak daripada kelereng Candra\. Jika jumlah kelereng keduanya (\d+) butir/))) {
+        const d = +m[1], J = +m[2], x = (J - d) / 2;
+        return ['Misalkan kelereng Candra = x, maka kelereng Budi = x + ' + d + '.', 'Jumlahnya: x + (x + ' + d + ') = ' + J + ', yaitu 2x + ' + d + ' = ' + J + '.', '2x = ' + J + ' − ' + d + ' = ' + (J - d) + '.', 'x = ' + (J - d) + ' ÷ 2 = ' + x + '. Jadi kelereng Candra ' + x + ' butir.'];
+    }
+    if ((m = s.match(/^(\d+) kali suatu bilangan (ditambah|dikurangi) (\d+) hasilnya (\d+)/))) {
+        const k = +m[1], tam = m[2] === 'ditambah', n = +m[3], h = +m[4], r = tam ? h - n : h + n;
+        return ['Misalkan bilangan itu = x.', 'Model: ' + k + 'x ' + (tam ? '+' : '−') + ' ' + n + ' = ' + h + '.', k + 'x = ' + h + (tam ? ' − ' : ' + ') + n + ' = ' + r + '.', 'x = ' + r + ' ÷ ' + k + ' = ' + (r / k) + '.'];
+    }
+    if ((m = s.match(/^Jumlah suatu bilangan dan (\d+) kali bilangan itu adalah (\d+)/))) {
+        const k = +m[1], h = +m[2];
+        return ['Misalkan bilangan itu = x.', 'Model: x + ' + k + 'x = ' + h + ', yaitu ' + (k + 1) + 'x = ' + h + '.', 'x = ' + h + ' ÷ ' + (k + 1) + ' = ' + (h / (k + 1)) + '.'];
+    }
+    if ((m = s.match(/Rp(\d+) ditambah Rp(\d+) untuk setiap jam.*?Rp(\d+) ditambah Rp(\d+) untuk setiap jam/))) {
+        const a1 = +m[1], b1 = +m[2], a2 = +m[3], b2 = +m[4], x = (a2 - a1) / (b1 - b2);
+        return ['Misalkan lama sewa = x jam.', 'Biaya A = ' + rp(a1) + ' + ' + rp(b1) + 'x, biaya B = ' + rp(a2) + ' + ' + rp(b2) + 'x.', 'Biaya sama: ' + rp(a1) + ' + ' + rp(b1) + 'x = ' + rp(a2) + ' + ' + rp(b2) + 'x.', '(' + rp(b1) + ' − ' + rp(b2) + ')x = ' + rp(a2) + ' − ' + rp(a1) + ', yaitu ' + rp(b1 - b2) + 'x = ' + rp(a2 - a1) + '.', 'x = ' + (a2 - a1) / (b1 - b2) + '. Jadi biayanya sama setelah ' + x + ' jam.'];
+    }
+    if ((m = s.match(/Umur seorang ayah (\d+) kali umur anaknya\. Jika jumlah umur ayah dan anaknya (\d+) tahun/))) {
+        const k = +m[1], J = +m[2];
+        return ['Misalkan umur anak = x, maka umur ayah = ' + k + 'x.', 'Jumlahnya: x + ' + k + 'x = ' + J + ', yaitu ' + (k + 1) + 'x = ' + J + '.', 'x = ' + J + ' ÷ ' + (k + 1) + ' = ' + (J / (k + 1)) + '. Jadi umur anak ' + (J / (k + 1)) + ' tahun.'];
+    }
+    if ((m = s.match(/\(x \+ (\d+)\)°, dan \(x \+ (\d+)\)°/))) {
+        const p = +m[1], r = +m[2], x = (180 - p - r) / 3;
+        return ['Jumlah ketiga sudut segitiga = 180°.', 'x + (x + ' + p + ') + (x + ' + r + ') = 180, yaitu 3x + ' + (p + r) + ' = 180.', '3x = 180 − ' + (p + r) + ' = ' + (180 - p - r) + '.', 'x = ' + (180 - p - r) + ' ÷ 3 = ' + x + '. Jadi x = ' + x + '°.'];
+    }
+    if ((m = s.match(/Rani membawa uang Rp(\d+)\. Ia membeli (\d+) buah buku tulis.*?kembalian Rp(\d+)/))) {
+        const U = +m[1], n = +m[2], K = +m[3], x = (U - K) / n;
+        return ['Misalkan harga satu buku tulis = x.', 'Uang yang dipakai = ' + rp(U) + ' − ' + rp(K) + ' = ' + rp(U - K) + '.', 'Model: ' + n + 'x = ' + rp(U - K) + '.', 'x = ' + rp(U - K) + ' ÷ ' + n + ' = ' + rp(x) + '.'];
+    }
+    if ((m = s.match(/Suhu air mula-mula (\d+)°C.*?turun (\d+)°C setiap menit.*?menjadi (\d+)°C/))) {
+        const S = +m[1], d = +m[2], E = +m[3], x = (S - E) / d;
+        return ['Misalkan lama pendinginan = x menit.', 'Suhu yang turun = ' + S + ' − ' + E + ' = ' + (S - E) + '°C.', 'Model: ' + d + 'x = ' + (S - E) + '.', 'x = ' + (S - E) + ' ÷ ' + d + ' = ' + x + '. Jadi ' + x + ' menit.'];
+    }
+    return null;
+}
+
+/* Penjelasan untuk soal konsep */
+const KONSEP = [
+['Manakah yang merupakan persamaan linear satu variabel', 'PLSV harus memenuhi tiga syarat: ada tanda "=", hanya satu jenis huruf, dan pangkat huruf 1. Bentuk 2x + 3 = 7 memenuhi ketiganya. 2x + y = 5 punya dua variabel, 3x + 4 > 10 memakai tanda ">" (pertidaksamaan), dan x² + 2 = 6 berpangkat 2.'],
+['Kalimat terbuka yang dihubungkan', 'Kalimat terbuka yang memakai tanda "=" disebut persamaan. Pertidaksamaan memakai tanda seperti <, >, ≤, atau ≥.'],
+['Koefisien x pada', 'Koefisien adalah angka yang menempel di depan variabel. Pada 5x − 7 = 18, angka di depan x adalah 5. Angka −7 dan 18 adalah konstanta.'],
+['Konstanta pada ruas kiri', 'Konstanta adalah angka tanpa huruf. Ruas kiri 4x + 9 punya konstanta 9. Angka 4 adalah koefisien, dan 25 berada di ruas kanan.'],
+['Variabel pada persamaan 3p', 'Variabel adalah huruf pengganti bilangan yang belum diketahui. Pada 3p + 8 = 20, hurufnya adalah p.'],
+['Dua persamaan dikatakan ekuivalen', 'Persamaan ekuivalen boleh berbeda bentuk, tetapi himpunan penyelesaiannya sama.'],
+['Agar persamaan tetap ekuivalen', 'Seperti timbangan: lakukan hal yang sama pada kedua ruas. Boleh dikali atau dibagi bilangan yang sama asalkan bukan nol, karena kali nol menghilangkan informasi persamaan. Mengubah satu ruas saja membuat timbangan tidak seimbang.'],
+['Pangkat tertinggi variabel', 'Linear artinya pangkat variabel hanya 1. Kalau pangkatnya 2, persamaannya menjadi persamaan kuadrat.'],
+['Banyaknya variabel pada persamaan linear satu variabel', 'Namanya "satu variabel", artinya hanya ada satu jenis huruf (satu kotak rahasia).'],
+['Bentuk umum persamaan linear', 'Bentuk umumnya ax + b = 0 dengan a ≠ 0. Kalau a = 0, variabel x hilang. Bentuk ax + by = c punya dua variabel, dan ax² + bx + c = 0 berpangkat 2.'],
+['ekuivalen dengan 2x + 6', 'Selesaikan 2x + 6 = 14: 2x = 8, sehingga x = 4. Persamaan ekuivalen harus berpenyelesaian x = 4. Pada x + 3 = 7, x = 4 (cocok). Pada x + 6 = 7, x = 1. Pada x + 3 = 14, x = 11. Pada 2x = 20, x = 10.'],
+['dipindahkan dari ruas kiri ke ruas kanan', 'Memindahkan + 5 ke ruas kanan berarti mengurangi kedua ruas dengan 5, sehingga x = 12 − 5. Tanda + berubah menjadi −.'],
+['3x − 4 = 11 dapat diubah', 'Lawan dari − 4 adalah + 4. Tambahkan 4 pada kedua ruas sehingga 3x = 11 + 4.'],
+['Lima lebih dari suatu bilangan', '"Lima lebih dari" artinya ditambah 5, jadi x + 5 = 12.'],
+['Dua kali suatu bilangan dikurangi 3', '"Dua kali bilangan" ditulis 2x, lalu "dikurangi 3" ditulis 2x − 3. Jadi 2x − 3 = 9.'],
+['Tiga kali jumlah suatu bilangan dan 4', '"Jumlah bilangan dan 4" ditulis (x + 4), lalu dikali 3 sehingga 3(x + 4) = 18. Kurung penting supaya angka 4 ikut dikali 3.'],
+['Setengah dari suatu bilangan', '"Setengah dari bilangan" ditulis x/2, lalu ditambah 2, sehingga x/2 + 2 = 7.'],
+['Manakah yang bukan persamaan linear satu variabel', '3x + 2y = 6 punya dua variabel (x dan y), jadi bukan PLSV. Pilihan lain punya satu variabel berpangkat 1 dan tanda "=".'],
+['Manakah yang merupakan kalimat terbuka', 'Kalimat terbuka memuat variabel yang nilainya belum diketahui, sehingga belum bisa dinilai benar atau salah. x + 3 = 8 memuat x, sedangkan pilihan lain hanya berisi angka.'],
+['Langkah pertama yang tepat untuk menyelesaikan x/2', 'Penyebutnya 2 dan 3, KPK-nya 6. Kalikan kedua ruas dengan 6 untuk menghilangkan pecahan.'],
+['bilangan pengganti x dari', 'Substitusikan satu per satu. x = 4 → 2(4) + 3 = 11 (benar). x = 1 → 5, x = 2 → 7, x = 3 → 9, x = 5 → 13, semuanya tidak sama dengan 11.'],
+['Penyelesaian dari persamaan linear satu variabel disebut juga', 'Nilai variabel yang membuat persamaan benar disebut penyelesaian atau akar persamaan.'],
+['Himpunan penyelesaian dari 2x = 10', 'Bagi kedua ruas dengan 2 sehingga x = 5. Himpunan penyelesaiannya {5}.'],
+['dibagi 4, maka diperoleh', 'Bentuknya 4x = 20. Bagi kedua ruas dengan 4 sehingga x = 5.']
+];
+
+function ulas(d, j) {
+    const q = d.q, hr = 'ABCD';
+    let m, L = null, why = '';
+    const kons = KONSEP.find(k => q.indexOf(k[0]) > -1);
+    if (kons) {
+        L = [kons[1]];
+        why = 'Pilihanmu kurang tepat, lihat alasannya di bawah.';
+    } else if ((m = q.match(/^(?:Penyelesaian dari persamaan|Nilai x yang memenuhi persamaan) (.+) adalah \.\.\.$/))) {
+        L = ['Selesaikan persamaan ' + m[1] + ':'].concat(langkahPers(m[1]).L);
+        const f = j === undefined ? null : optF(d.opsi[j]);
+        if (f) {
+            const lr = m[1].split('=').map(ps), vl = ev(lr[0], f), vr = ev(lr[1], f);
+            why = 'Kalau x = ' + fStr(f) + ' dimasukkan ke persamaan, ruas kiri = ' + fStr(vl) + ' dan ruas kanan = ' + fStr(vr) + '. Keduanya tidak sama, jadi itu bukan penyelesaian.';
+        }
+    } else if ((m = q.match(/(?:penyelesaian(?:nya)?|akarnya) x = (−|-)?(\d+)/))) {
+        const k = Fr((m[1] ? -1 : 1) * +m[2]);
+        L = ['Masukkan x = ' + fStr(k) + ' ke setiap pilihan. Pilihan yang benar adalah yang ruas kirinya sama dengan ruas kanannya:'].concat(langkahSubst(d, k));
+        why = 'Pilihanmu tidak membuat ruas kiri sama dengan ruas kanan (lihat tanda ✗ pada pilihanmu).';
+    } else if ((m = q.match(/^Jika x memenuhi persamaan (.+), maka nilai dari (.+) adalah \.\.\.$/))) {
+        const s = langkahPers(m[1]), v = ev(ps(m[2]), s.x);
+        L = ['Cari nilai x dari ' + m[1] + ' terlebih dahulu:'].concat(s.L, ['Masukkan x = ' + fStr(s.x) + ' ke ' + m[2] + ', hasilnya ' + fStr(v) + '.']);
+        why = 'Hasil perhitungan yang benar adalah ' + d.opsi[d.benar] + ', berbeda dari pilihanmu.';
+    } else if ((L = cerita(q))) {
+        why = 'Hasil perhitungan yang benar adalah ' + d.opsi[d.benar] + ', berbeda dari pilihanmu.';
+    } else {
+        L = ['Jawaban yang benar adalah ' + d.opsi[d.benar] + '.'];
+    }
+    const ok = j === d.benar;
+    const status = ok ? 'Jawabanmu benar.' : (j === undefined ? 'Kamu belum menjawab soal ini.' : 'Jawabanmu salah. ' + why);
+    return '<div class="jelas"><p class="' + (ok ? 'ok' : 'no') + '"><b>' + esc(status) + '</b></p>' +
+        '<p><b>' + (ok ? 'Kenapa benar:' : 'Cara yang benar:') + '</b></p>' +
+        '<ol>' + L.map(x => '<li>' + esc(x) + '</li>').join('') + '</ol>' +
+        '<p class="kunci">Jawaban yang benar: <b>' + hr[d.benar] + '. ' + esc(d.opsi[d.benar]) + '</b></p></div>';
+}
+
+/* ===== STATE & TAMPILAN ===== */
+let soal = [];
+let idx = 0;
+let jawaban = {};
+let selesaiSudah = false;
+
+function init(){
+    soal = pilihSoal().map(i => {
+        const b = BANK[i];
+        const benarTeks = b.opsi[b.kunci];
+        const opsi = acak(b.opsi);
+        return { q: b.q, opsi: opsi, benar: opsi.indexOf(benarTeks) };
+    });
+    renderGrid();
+    render();
+}
+
+function renderGrid(){
+    document.getElementById('grid').innerHTML = soal.map((_, i) => {
+        let cls = 'num';
+        if (i === idx) cls += ' active';
+        else if (jawaban[i] !== undefined) cls += ' done';
+        return `<div class="${cls}" onclick="go(${i})">${i + 1}</div>`;
+    }).join('');
+    document.getElementById('selesai').textContent = Object.keys(jawaban).length;
+    document.getElementById('pengerjaan').textContent = idx + 1;
+}
+
+function render(){
+    const d = soal[idx];
+    document.getElementById('q').textContent = `${idx + 1}. ${d.q}`;
+    const huruf = ['A','B','C','D'];
+    document.getElementById('opsi').innerHTML = d.opsi.map((o, i) => `
+        <button class="btn ${jawaban[idx] === i ? 'selected' : ''}" onclick="pilih(${i})">${huruf[i]}. ${esc(o)}</button>
+    `).join('');
+    document.getElementById('btnNext').textContent = idx === soal.length - 1 ? 'Selesai ✓' : 'Lanjut →';
+    document.getElementById('progressBar').style.width = ((idx + 1) / soal.length * 100) + '%';
+    document.getElementById('badge').textContent = `Soal ${idx + 1}/${soal.length}`;
+    renderGrid();
+}
+
+function pilih(i){ jawaban[idx] = i; render(); }
+function go(i){ idx = i; render(); }
+function prev(){ if (idx > 0) { idx--; render(); } }
+function next(){
+    if (idx < soal.length - 1) { idx++; render(); return; }
+    const kosong = soal.length - Object.keys(jawaban).length;
+    if (kosong > 0 && !confirm(`Masih ada ${kosong} soal belum dijawab. Selesaikan latihan sekarang?`)) return;
+    finish();
+}
+
+function finish(){
+    if (selesaiSudah) return;
+    selesaiSudah = true;
+
+    let skor = 0;
+    soal.forEach((d, i) => { if (jawaban[i] === d.benar) skor++; });
+    const nilai = skor * 10;
+    const huruf = ['A','B','C','D'];
+
+    const review = soal.map((d, i) => {
+        const ok = jawaban[i] === d.benar;
+        const jwbSiswa = jawaban[i] === undefined ? 'Tidak dijawab' : `${huruf[jawaban[i]]}. ${esc(d.opsi[jawaban[i]])}`;
+        return `<div class="review ${ok ? 'benar' : 'salah'}">
+            <b>${i + 1}. ${ok ? 'Benar' : 'Belum tepat'}</b>
+            <p>${esc(d.q)}</p>
+            <p><b>Jawabanmu:</b> ${jwbSiswa}<br><b>Jawaban benar:</b> ${huruf[d.benar]}. ${esc(d.opsi[d.benar])}</p>
+            <details ${ok ? '' : 'open'}><summary>Lihat penjelasan</summary>${ulas(d, jawaban[i])}</details>
+        </div>`;
+    }).join('');
+
+    document.getElementById('main').innerHTML = `
+        <div class="topbar">
+            <a href="dashboard.html" class="dashboard-btn">Kembali</a>
+            <div class="badge">Latihan selesai</div>
+        </div>
+        <h2 style="color:#0369a1;">Hasil Latihan Soal PLSV</h2>
+        <div class="skor-besar">${nilai}</div>
+        <p style="margin-bottom:14px;">Kamu menjawab benar ${skor} dari ${soal.length} soal.</p>
+        <p style="margin-bottom:12px;color:#64748b;">Buka penjelasan di tiap soal untuk melihat kenapa jawabanmu benar atau salah. Tekan "Latihan Lagi" untuk mendapat 10 soal baru.</p>
+        ${review}
+        <div class="footer"><span></span><button class="next" onclick="location.reload()">Latihan Lagi</button></div>`;
+    document.getElementById('main').scrollTop = 0;
+}
+
+init();
+</script>
+</body>
+</html>

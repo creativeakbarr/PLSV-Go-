@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLSV Go!</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --navy: #0b2a5b;
+            --navy-gelap: #071a3d;
+            --biru: #1d4ed8;
+            --biru-terang: #3b82f6;
+            --langit: #38bdf8;
+            --langit-muda: #7dd3fc;
+            --indigo: #6366f1;
+            --teal: #14b8a6;
+            --amber: #f59e0b;
+            --oranye: #f97316;
+        }
+
+        * { font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif; }
+
+        body {
+            margin: 0;
+            background: url('assets/images/bgg.png') center/cover no-repeat fixed;
+            background-color: #1d4ed8;
+            color: white;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            padding: 12px clamp(16px, 5vw, 50px);
+            background: #06225a;
+            border-bottom: 1px solid rgba(147, 197, 253, 0.2);
+            box-shadow: 0 4px 16px rgba(7, 26, 61, 0.25);
+        }
+
+        .brand-area { display: flex; align-items: center; gap: 12px; }
+        .logo-nav { width: 38px; height: auto; }
+        .brand-text { font-size: 1.2rem; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
+
+        /* HERO */
+        .hero-section {
+            flex: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: clamp(20px, 5vw, 40px) 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .center-logo {
+            width: clamp(72px, 18vw, 100px);
+            height: auto;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 14px rgba(125, 211, 252, 0.45));
+        }
+
+        h1 {
+            font-size: clamp(1.6rem, 6vw, 2.6rem);
+            font-weight: 900;
+            margin-bottom: clamp(18px, 4vw, 28px);
+            letter-spacing: -0.5px;
+            text-shadow: 0 3px 12px rgba(7, 26, 61, 0.35);
+        }
+
+        /* KARTU MENU (4 TOMBOL) */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            width: 100%;
+            max-width: 960px;
+            margin-bottom: 24px;
+        }
+
+        .card-link { text-decoration: none; color: inherit; display: block; }
+
+        .edu-card {
+            height: 100%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.20), rgba(255, 255, 255, 0.08));
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(186, 230, 253, 0.6);
+            box-shadow: 0 8px 24px rgba(7, 26, 61, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            border-radius: 18px;
+            padding: 22px 14px;
+            text-align: center;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+            cursor: pointer;
+        }
+        .edu-card:hover {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0.14));
+            transform: translateY(-5px);
+            border-color: var(--langit);
+            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4), 0 0 14px rgba(56, 189, 248, 0.3);
+        }
+        .card-link:focus-visible .edu-card { border-color: var(--langit-muda); box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.5); }
+
+        .icon-box {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            margin: 0 auto 12px;
+            color: white;
+        }
+        .icon-materi    { background: linear-gradient(135deg, var(--langit), var(--biru-terang)); box-shadow: 0 4px 12px rgba(56, 189, 248, 0.45); }
+        .icon-contoh    { background: linear-gradient(135deg, var(--indigo), var(--biru)); box-shadow: 0 4px 12px rgba(99, 102, 241, 0.45); }
+        .icon-kalkulator{ background: linear-gradient(135deg, var(--amber), var(--oranye)); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.45); }
+        .icon-latihan   { background: linear-gradient(135deg, var(--teal), var(--biru-terang)); box-shadow: 0 4px 12px rgba(20, 184, 166, 0.45); }
+
+        .edu-card h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 6px; color: white; }
+        .edu-card p { font-size: 0.82rem; color: rgba(255, 255, 255, 0.95); margin: 0; line-height: 1.4; }
+
+        /* TOMBOL TUTORIAL */
+        .tutor-grid { display: flex; justify-content: center; width: 100%; }
+        .tutor-btn {
+            background: rgba(255, 255, 255, 0.16);
+            border: 2px solid var(--langit);
+            color: #e0f2fe;
+            padding: 10px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.88rem;
+            transition: background 0.25s, color 0.25s, transform 0.25s, box-shadow 0.25s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .tutor-btn:hover {
+            background: #e0f2fe;
+            color: var(--navy);
+            transform: scale(1.03);
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.55);
+            text-decoration: none;
+        }
+        .tutor-btn:focus-visible { outline: 3px solid var(--langit-muda); outline-offset: 3px; }
+
+        /* FOOTER */
+        footer {
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.92);
+            font-size: 0.75rem;
+            letter-spacing: 0.4px;
+            line-height: 1.6;
+            padding: 12px 16px;
+            background: #06225a;
+            border-top: 1px solid rgba(147, 197, 253, 0.2);
+        }
+
+        /* Tablet: 2 x 2 */
+        @media (max-width: 899px) {
+            .card-container { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 520px; gap: 14px; }
+        }
+
+        @media (max-width: 767px) {
+            .edu-card { padding: 18px 10px; }
+            .edu-card h3 { font-size: 1.05rem; }
+        }
+
+        /* HP */
+        @media (max-width: 575px) {
+            .card-container { grid-template-columns: 1fr; max-width: 300px; gap: 12px; }
+            .edu-card {
+                padding: 14px 16px;
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                text-align: left;
+            }
+            .icon-box { margin: 0; flex-shrink: 0; }
+            .edu-card h3 { margin-bottom: 2px; }
+            .tutor-btn { width: 100%; max-width: 300px; }
+        }
+
+        /* HP landscape / layar pendek */
+        @media (max-height: 520px) {
+            .hero-section { justify-content: flex-start; }
+            .center-logo { width: 60px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container-fluid p-0 d-flex align-items-center">
+            <div class="brand-area">
+                <img src="assets/images/logo.png" alt="Logo PLSC Go!" class="logo-nav">
+                <span class="brand-text">PLSV Go!</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="hero-section">
+        <img src="assets/images/logo.png" alt="Logo Utama PLSV Go!" class="center-logo">
+
+        <h1>WELCOME TO PLSV Go!</h1>
+
+        <div class="card-container">
+            <a href="materi.html" class="card-link">
+                <div class="edu-card">
+                    <div class="icon-box icon-materi"><i class="fa-solid fa-book-open"></i></div>
+                    <div>
+                        <h3>Materi</h3>
+                        <p>Persamaan Linear Satu Variabel</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="contohsoal.html" class="card-link">
+                <div class="edu-card">
+                    <div class="icon-box icon-contoh"><i class="fa-solid fa-lightbulb"></i></div>
+                    <div>
+                        <h3>Contoh Soal</h3>
+                        <p>Pembahasan langkah demi langkah</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="kalkulator.html" class="card-link">
+                <div class="edu-card">
+                    <div class="icon-box icon-kalkulator"><i class="fa-solid fa-calculator"></i></div>
+                    <div>
+                        <h3>Kalkulator</h3>
+                        <p>Cari nilai x dan lihat langkahnya</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="evaluasi.html" class="card-link">
+                <div class="edu-card">
+                    <div class="icon-box icon-latihan"><i class="fa-solid fa-pencil"></i></div>
+                    <div>
+                        <h3>Evaluasi</h3>
+                        <p>Uji pemahamanmu sekarang</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        Developed by <strong>Ali Akbar Al-Ihsan</strong> <strong>250101502003</strong> | <strong>Pendidikan Matematika UNM</strong>
+    </footer>
+
+</body>
+</html>
